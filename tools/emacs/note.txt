@@ -1,0 +1,19 @@
+C-x C-f         find-file
+C-x C-s         save-buffer
+C-x C-w         write-file
+C-x C-c         save-buffers-kill-emacs
+
+C-x h           mark-whole-buffer
+
+
+C-g             top current command
+C-s             search
+
+C-w             kill-region (cut)
+C-y             restore-delete (paste)
+M-w             copy-region (copy)
+
+C-x u           Undo
+C-_             Undo multiple times
+
+M-{, }          Move cursor up/down one block
