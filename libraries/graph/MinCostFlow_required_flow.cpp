@@ -13,10 +13,10 @@ using namespace std;
 template<class Flow_t, class Cost_t>
 class MinCostFlow {
 public:
-    /* Min Cost Flow with a required flow (can't be changed to normal by
+    /* Min Cost Flow with a required flow (can be changed to normal by
      * a little modification
-     * using SPFA (Shortest Path Faster Algor) in case the cost is negative
-     * so if the cost is always positive, it can be replaced by Dijkstra
+     * Using SPFA (Shortest Path Faster Algor) in case the cost is negative
+     * If the cost is always positive, it can be replaced by Dijkstra
      */
     struct Edge {
         int v, rev;
