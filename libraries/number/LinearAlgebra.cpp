@@ -12,6 +12,26 @@ typedef vector<int> VI;
 typedef pair<int,int> PII;
 typedef long long LL;
 
+// Compute n choose m
+LL binomial(int n, int m) {
+    if (n < m || n < 0 || m < 0) return 0;
+    LL ans = 1, ans2 = 1;
+    for (int i = 0; i < m; i++) {
+        ans *= n - i;
+        ans2 *= i + 1;
+    }
+    return ans / ans2;
+}
+
+// compute catalan number (n >= 0)
+// 1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845, ...
+//
+// Ex. Number of ways to insert n pairs of parentheses in a word of n+1 letters.
+//     E.g., for n=3 there are 5 ways: ((ab)(cd)), (((ab)c)d), ((a(bc))d), (a((bc)d)), (a(b(cd))).
+LL catalan_number(int n) {
+    return binomial(n * 2, n) / (n + 1);
+}
+
 // return a % b (positive value)
 template<typename T>
 T mod(T a, T b) {
@@ -223,45 +243,6 @@ T GaussJordan(VVT &a, VVT &b) {
     return det;
 }
 
-int main() {
-    const int n = 4;
-    const int m = 2;
-    double A[n][n] = { {1,2,3,4},{1,0,1,0},{5,3,2,4},{6,1,4,6} };
-    double B[n][m] = { {1,2},{4,3},{5,6},{8,7} };
-    VVT a(n), b(n);
-    for (int i = 0; i < n; i++) {
-        a[i] = VT(A[i], A[i] + n);
-        b[i] = VT(B[i], B[i] + m);
-    }
-  
-    double det = GaussJordan(a, b);
-  
-    // expected: 60  
-    cout << "Determinant: " << det << endl;
-
-    // expected: -0.233333 0.166667 0.133333 0.0666667
-    //           0.166667 0.166667 0.333333 -0.333333
-    //           0.233333 0.833333 -0.133333 -0.0666667
-    //           0.05 -0.75 -0.1 0.2
-    cout << "Inverse: " << endl;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++)
-            cout << a[i][j] << ' ';
-        cout << endl;
-    }
-    
-    // expected: 1.63333 1.3
-    //           -0.166667 0.5
-    //           2.36667 1.7
-    //           -1.85 -1.35
-    cout << "Solution: " << endl;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++)
-            cout << b[i][j] << ' ';
-        cout << endl;
-    }
-}
-
 //////////////////////////////////////
 //  ReducedRowEchelonForm/ Find Rank
 //
@@ -312,4 +293,47 @@ int findRank(vector<vector<T> > &a, vector<T> &b, T p) {
     }
           
     return ans;
+}
+
+int main() {
+    const int n = 4;
+    const int m = 2;
+    double A[n][n] = { {1,2,3,4},{1,0,1,0},{5,3,2,4},{6,1,4,6} };
+    double B[n][m] = { {1,2},{4,3},{5,6},{8,7} };
+    VVT a(n), b(n);
+    for (int i = 0; i < n; i++) {
+        a[i] = VT(A[i], A[i] + n);
+        b[i] = VT(B[i], B[i] + m);
+    }
+  
+    double det = GaussJordan(a, b);
+  
+    // expected: 60  
+    cout << "Determinant: " << det << endl;
+
+    // expected: -0.233333 0.166667 0.133333 0.0666667
+    //           0.166667 0.166667 0.333333 -0.333333
+    //           0.233333 0.833333 -0.133333 -0.0666667
+    //           0.05 -0.75 -0.1 0.2
+    cout << "Inverse: " << endl;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            cout << a[i][j] << ' ';
+        cout << endl;
+    }
+    
+    // expected: 1.63333 1.3
+    //           -0.166667 0.5
+    //           2.36667 1.7
+    //           -1.85 -1.35
+    cout << "Solution: " << endl;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++)
+            cout << b[i][j] << ' ';
+        cout << endl;
+    }
+
+    for (int i = 0; i <= 10; i++) cout << catalan_number(i) << endl;
+    return 0;
+
 }

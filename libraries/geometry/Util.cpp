@@ -14,6 +14,15 @@
 
 using namespace std;
 
+#define SZ(x) ((int)((x).size()))
+
+/////////////////////////////////////////////////////////////////////////////////////
+//  Pick’s Theorem
+//  On a simple polygon constructed on a grid of equal-distanced points,
+//  for area A, the number of interior points I, number of boundary points B,
+//  we have A = I + B / 2 - 1.
+/////////////////////////////////////////////////////////////////////////////////////
+
 // Returns true if Rec(a, b) can fit in Rec(c, d)
 bool can_ab_fit_in_cd(double a, double b, double c, double d){
 	if(a * b > c * d) return false;
