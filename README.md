@@ -1,4 +1,4 @@
 cpt
 ===
 
-Competitive Programming tools
+Competitive Programming tools, useful libraries
