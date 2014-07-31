@@ -16,61 +16,37 @@ using namespace std;
 
 #define SZ(x) ((int)((x).size()))
 
-/////////////////////////////////////////////////////////////////////////////////////
-//  Pick’s Theorem
-//  On a simple polygon constructed on a grid of equal-distanced points,
-//  for area A, the number of interior points I, number of boundary points B,
-//  we have A = I + B / 2 - 1.
-/////////////////////////////////////////////////////////////////////////////////////
-
-// Returns true if Rec(a, b) can fit in Rec(c, d)
-bool can_ab_fit_in_cd(double a, double b, double c, double d){
-	if(a * b > c * d) return false;
-	if(a > b) swap(a, b);
-	if(c > d) swap(c, d);
-	if(a > c) return false;
-	if(a <= c && b <= d) return true;
-	double dis = sqrt(a * a + b * b);
-	double P = asin(c / dis);
-	double Q = asin(a / dis);
-	double theta = P - Q;
-	double dd = b * cos(theta) + a * sin(theta);
-	return dd <= d;
-}
-
-// -- from Stanford ACM team notebook --
+// -- Adapted from Stanford ACM team notebook --
 double INF = 1e100;
 double EPS = 1e-12;
 
 typedef double T;
-struct PT {
+struct Point {
     T x, y;
-    PT() {}
-    PT(T x_, T y_) : x(x_), y(y_) {}
-    PT(const PT &p) : x(p.x), y(p.y) {}
-    PT operator + (const PT &p) const { return PT(x+p.x, y+p.y); }
-    PT operator - (const PT &p) const { return PT(x-p.x, y-p.y); }
-    PT operator * (double c) const { return PT(x*c, y*c ); }
-    PT operator / (double c) const { return PT(x/c, y/c ); }
-    bool operator < (const PT &rhs) const { return make_pair(y,x) < make_pair(rhs.y,rhs.x); }
-    bool operator == (const PT &rhs) const { return make_pair(y,x) == make_pair(rhs.y,rhs.x); }
+    Point() {}
+    Point(T x_, T y_) : x(x_), y(y_) {}
+    Point(const Point &p) : x(p.x), y(p.y) {}
+    Point operator + (const Point &p) const { return Point(x+p.x, y+p.y); }
+    Point operator - (const Point &p) const { return Point(x-p.x, y-p.y); }
+    Point operator * (double c) const { return Point(x*c, y*c ); }
+    Point operator / (double c) const { return Point(x/c, y/c ); }
+    bool operator < (const Point &rhs) const { return make_pair(y,x) < make_pair(rhs.y,rhs.x); }
+    bool operator == (const Point &rhs) const { return make_pair(y,x) == make_pair(rhs.y,rhs.x); }
 };
 
-T cross(PT p, PT q) { return p.x*q.y-p.y*q.x; }
-T area2(PT a, PT b, PT c) { return cross(a,b) + cross(b,c) + cross(c,a); }
-T dot(PT p, PT q) { return p.x*q.x+p.y*q.y; }
-T dist2(PT p, PT q) { return dot(p-q,p-q); }
+T cross(Point p, Point q) { return p.x*q.y-p.y*q.x; }
+T area2(Point a, Point b, Point c) { return cross(a,b) + cross(b,c) + cross(c,a); }
+T dot(Point p, Point q) { return p.x*q.x+p.y*q.y; }
+T dist2(Point p, Point q) { return dot(p-q,p-q); }
 
-ostream &operator<<(ostream &os, const PT &p) {
+ostream &operator<<(ostream &os, const Point &p) {
     return os << "(" << p.x << "," << p.y << ")";
 }
 // rotate a point CCW or CW around the origin
-PT RotateCCW90(PT p) { return PT(-p.y,p.x); }
-PT RotateCW90(PT p) { return PT(p.y,-p.x); }
+Point RotateCCW90(Point p) { return Point(-p.y,p.x); }
+Point RotateCW90(Point p) { return Point(p.y,-p.x); }
 
-PT RotateCCW(PT p, double t) {
-    return PT(p.x*cos(t)-p.y*sin(t), p.x*sin(t)+p.y*cos(t));
-}
+Point RotateCCW(Point p, double t) { return Point(p.x*cos(t)-p.y*sin(t), p.x*sin(t)+p.y*cos(t)); }
 
 
 ////////////////////
@@ -89,20 +65,20 @@ PT RotateCCW(PT p, double t) {
 
 #define REMOVE_REDUNDANT
 #ifdef REMOVE_REDUNDANT
-bool between(const PT &a, const PT &b, const PT &c) {
+bool between(const Point &a, const Point &b, const Point &c) {
     return (fabs(area2(a,b,c)) < EPS && (a.x-b.x)*(c.x-b.x) <= 0 && 
             (a.y-b.y)*(c.y-b.y) <= 0);
 }
 #endif
 
-void ConvexHull(vector<PT> &pts) {
+void ConvexHull(vector<Point> &pts) {
     sort(pts.begin(), pts.end());
     pts.erase(unique(pts.begin(), pts.end()), pts.end());
-    vector<PT> up, dn;
+    vector<Point> up, dn;
     for (int i = 0; i < pts.size(); i++) {
-        while (up.size() > 1 && area2(up[up.size()-2], up.back(), pts[i]) >= 0)
+        while (up.size() > 1 && area2(up[up.size()-2], up.back(), pts[i]) >= 0) // concave down
             up.pop_back();
-        while (dn.size() > 1 && area2(dn[dn.size()-2], dn.back(), pts[i]) <= 0)
+        while (dn.size() > 1 && area2(dn[dn.size()-2], dn.back(), pts[i]) <= 0) // concave up
             dn.pop_back();
         up.push_back(pts[i]);
 		dn.push_back(pts[i]);
@@ -128,12 +104,12 @@ void ConvexHull(vector<PT> &pts) {
 
 // project point c onto line through a and b
 // assuming a != b
-PT ProjectPointLine(PT a, PT b, PT c) {
+Point ProjectPointLine(Point a, Point b, Point c) {
     return a + (b-a)*dot(c-a, b-a)/dot(b-a, b-a);
 }
 
 // project point c onto line segment through a and b
-PT ProjectPointSegment(PT a, PT b, PT c) {
+Point ProjectPointSegment(Point a, Point b, Point c) {
     double r = dot(b-a,b-a);
     if (fabs(r) < EPS) return a;
     r = dot(c-a, b-a)/r;
@@ -143,7 +119,7 @@ PT ProjectPointSegment(PT a, PT b, PT c) {
 }
 
 // compute distance from c to segment between a and b
-double DistancePointSegment(PT a, PT b, PT c) {
+double DistancePointSegment(Point a, Point b, Point c) {
     return sqrt(dist2(c, ProjectPointSegment(a, b, c)));
 }
 
@@ -154,18 +130,18 @@ double DistancePointPlane(double x, double y, double z,
 }
 
 // determine if lines from a to b and c to d are parallel or collinear
-bool LinesParallel(PT a, PT b, PT c, PT d) {
+bool LinesParallel(Point a, Point b, Point c, Point d) {
     return fabs(cross(b-a, c-d)) < EPS;
 }
 
-bool LinesCollinear(PT a, PT b, PT c, PT d) {
+bool LinesCollinear(Point a, Point b, Point c, Point d) {
     return LinesParallel(a, b, c, d) && fabs(cross(a-b, a-c)) < EPS && 
         fabs(cross(c-d, c-a)) < EPS;
 }
 
 // determine if line segment from a to b intersects with
 // line segment from c to d
-bool SegmentsIntersect(PT a, PT b, PT c, PT d) {
+bool SegmentsIntersect(Point a, Point b, Point c, Point d) {
     if (LinesCollinear(a, b, c, d)) {
         if (dist2(a, c) < EPS || dist2(a, d) < EPS || 
             dist2(b, c) < EPS || dist2(b, d) < EPS) 
@@ -183,14 +159,14 @@ bool SegmentsIntersect(PT a, PT b, PT c, PT d) {
 // with line passing through c and d, assuming that unique
 // intersection exists; for segment intersection, check if
 // segments intersect first
-PT ComputeLineIntersection(PT a, PT b, PT c, PT d) {
+Point ComputeLineIntersection(Point a, Point b, Point c, Point d) {
     b=b-a; d=c-d; c=c-a;
     assert(dot(b, b) > EPS && dot(d, d) > EPS);
     return a + b*cross(c, d)/cross(b, d);
 }
 
 // compute center of circle given three points
-PT ComputeCircleCenter(PT a, PT b, PT c) {
+Point ComputeCircleCenter(Point a, Point b, Point c) {
     b=(a+b)/2;
     c=(a+c)/2;
     return ComputeLineIntersection(b, b+RotateCW90(a-b), c, c+RotateCW90(a-c));
@@ -203,7 +179,7 @@ PT ComputeCircleCenter(PT a, PT b, PT c) {
 // integer arithmetic by taking care of the division appropriately
 // (making sure to deal with signs properly) and then by writing exact
 // tests for checking point on polygon boundary
-bool PointInPolygon(const vector<PT> &p, PT q) {
+bool PointInPolygon(const vector<Point> &p, Point q) {
     bool c = 0;
     for (int i = 0; i < p.size(); i++){
         int j = (i+1)%p.size();
@@ -215,7 +191,7 @@ bool PointInPolygon(const vector<PT> &p, PT q) {
 }
 
 // determine if point is on the boundary of a polygon
-bool PointOnPolygon(const vector<PT> &p, PT q) {
+bool PointOnPolygon(const vector<Point> &p, Point q) {
     for (int i = 0; i < p.size(); i++)
         if (dist2(ProjectPointSegment(p[i], p[(i+1)%p.size()], q), q) < EPS)
             return true;
@@ -224,8 +200,8 @@ bool PointOnPolygon(const vector<PT> &p, PT q) {
 
 // compute intersection of line through points a and b with
 // circle centered at c with radius r > 0
-vector<PT> CircleLineIntersection(PT a, PT b, PT c, double r) {
-    vector<PT> ret;
+vector<Point> CircleLineIntersection(Point a, Point b, Point c, double r) {
+    vector<Point> ret;
     b = b-a;
     a = a-c;
     double A = dot(b, b);
@@ -241,13 +217,13 @@ vector<PT> CircleLineIntersection(PT a, PT b, PT c, double r) {
 
 // compute intersection of circle centered at a with radius r
 // with circle centered at b with radius R
-vector<PT> CircleCircleIntersection(PT a, PT b, double r, double R) {
-    vector<PT> ret;
+vector<Point> CircleCircleIntersection(Point a, Point b, double r, double R) {
+    vector<Point> ret;
     double d = sqrt(dist2(a, b));
     if (d > r+R || d+min(r, R) < max(r, R)) return ret;
     double x = (d*d-R*R+r*r)/(2*d);
     double y = sqrt(r*r-x*x);
-    PT v = (b-a)/d;
+    Point v = (b-a)/d;
     ret.push_back(a+v*x + RotateCCW90(v)*y);
     if (y > 0)
         ret.push_back(a+v*x - RotateCCW90(v)*y);
@@ -258,7 +234,7 @@ vector<PT> CircleCircleIntersection(PT a, PT b, double r, double R) {
 // polygon, assuming that the coordinates are listed in a clockwise or
 // counterclockwise fashion. Note that the centroid is often known as
 // the "center of gravity" or "center of mass".
-double ComputeSignedArea(const vector<PT> &p) {
+double ComputeSignedArea(const vector<Point> &p) {
     double area = 0;
     for(int i = 0; i < p.size(); i++) {
         int j = (i+1) % p.size();
@@ -267,12 +243,12 @@ double ComputeSignedArea(const vector<PT> &p) {
     return area / 2.0;
 }
 
-double ComputeArea(const vector<PT> &p) {
+double ComputeArea(const vector<Point> &p) {
     return fabs(ComputeSignedArea(p));
 }
 
-PT ComputeCentroid(const vector<PT> &p) {
-    PT c(0,0);
+Point ComputeCentroid(const vector<Point> &p) {
+    Point c(0,0);
     double scale = 6.0 * ComputeSignedArea(p);
     for (int i = 0; i < p.size(); i++){
         int j = (i+1) % p.size();
@@ -282,7 +258,7 @@ PT ComputeCentroid(const vector<PT> &p) {
 }
 
 // tests whether or not a given polygon (in CW or CCW order) is simple
-bool IsSimple(const vector<PT> &p) {
+bool IsSimple(const vector<Point> &p) {
     for (int i = 0; i < p.size(); i++) {
         for (int k = i+1; k < p.size(); k++) {
             int j = (i+1) % p.size();
@@ -297,77 +273,103 @@ bool IsSimple(const vector<PT> &p) {
 
 int main() {
 	// expected: (-5,2)
-	cerr << RotateCCW90(PT(2,5)) << endl;
+	cerr << RotateCCW90(Point(2,5)) << endl;
 	// expected: (5,-2)
-	cerr << RotateCW90(PT(2,5)) << endl;
+	cerr << RotateCW90(Point(2,5)) << endl;
 	// expected: (-5,2)
-	cerr << RotateCCW(PT(2,5),M_PI/2) << endl;
+	cerr << RotateCCW(Point(2,5),M_PI/2) << endl;
 	// expected: (5,2)
-	cerr << ProjectPointLine(PT(-5,-2), PT(10,4), PT(3,7)) << endl;
+	cerr << ProjectPointLine(Point(-5,-2), Point(10,4), Point(3,7)) << endl;
 	// expected: (5,2) (7.5,3) (2.5,1)
-	cerr << ProjectPointSegment(PT(-5,-2), PT(10,4), PT(3,7)) << " "
-	<< ProjectPointSegment(PT(7.5,3), PT(10,4), PT(3,7)) << " "
-	<< ProjectPointSegment(PT(-5,-2), PT(2.5,1), PT(3,7)) << endl;
+	cerr << ProjectPointSegment(Point(-5,-2), Point(10,4), Point(3,7)) << " "
+	<< ProjectPointSegment(Point(7.5,3), Point(10,4), Point(3,7)) << " "
+	<< ProjectPointSegment(Point(-5,-2), Point(2.5,1), Point(3,7)) << endl;
 	// expected: 6.78903
 	cerr << DistancePointPlane(4,-4,3,2,-2,5,-8) << endl;
 	// expected: 1 0 1
-	cerr << LinesParallel(PT(1,1), PT(3,5), PT(2,1), PT(4,5)) << " "
-	<< LinesParallel(PT(1,1), PT(3,5), PT(2,0), PT(4,5)) << " "
-	<< LinesParallel(PT(1,1), PT(3,5), PT(5,9), PT(7,13)) << endl;
+	cerr << LinesParallel(Point(1,1), Point(3,5), Point(2,1), Point(4,5)) << " "
+	<< LinesParallel(Point(1,1), Point(3,5), Point(2,0), Point(4,5)) << " "
+	<< LinesParallel(Point(1,1), Point(3,5), Point(5,9), Point(7,13)) << endl;
 	// expected: 0 0 1
-	cerr << LinesCollinear(PT(1,1), PT(3,5), PT(2,1), PT(4,5)) << " "
-	<< LinesCollinear(PT(1,1), PT(3,5), PT(2,0), PT(4,5)) << " "
-	<< LinesCollinear(PT(1,1), PT(3,5), PT(5,9), PT(7,13)) << endl;
+	cerr << LinesCollinear(Point(1,1), Point(3,5), Point(2,1), Point(4,5)) << " "
+	<< LinesCollinear(Point(1,1), Point(3,5), Point(2,0), Point(4,5)) << " "
+	<< LinesCollinear(Point(1,1), Point(3,5), Point(5,9), Point(7,13)) << endl;
 	// expected: 1 1 1 0
-	cerr << SegmentsIntersect(PT(0,0), PT(2,4), PT(3,1), PT(-1,3)) << " "
-	<< SegmentsIntersect(PT(0,0), PT(2,4), PT(4,3), PT(0,5)) << " "
-	<< SegmentsIntersect(PT(0,0), PT(2,4), PT(2,-1), PT(-2,1)) << " "
-	<< SegmentsIntersect(PT(0,0), PT(2,4), PT(5,5), PT(1,7)) << endl;
+	cerr << SegmentsIntersect(Point(0,0), Point(2,4), Point(3,1), Point(-1,3)) << " "
+	<< SegmentsIntersect(Point(0,0), Point(2,4), Point(4,3), Point(0,5)) << " "
+	<< SegmentsIntersect(Point(0,0), Point(2,4), Point(2,-1), Point(-2,1)) << " "
+	<< SegmentsIntersect(Point(0,0), Point(2,4), Point(5,5), Point(1,7)) << endl;
 	// expected: (1,2)
-	cerr << ComputeLineIntersection(PT(0,0), PT(2,4), PT(3,1), PT(-1,3)) << endl;
+	cerr << ComputeLineIntersection(Point(0,0), Point(2,4), Point(3,1), Point(-1,3)) << endl;
 	// expected: (1,1)
-	cerr << ComputeCircleCenter(PT(-3,4), PT(6,1), PT(4,5)) << endl;
-	vector<PT> v;
-	v.push_back(PT(0,0));
-	v.push_back(PT(5,0));
-	v.push_back(PT(5,5));
-	v.push_back(PT(0,5));
+	cerr << ComputeCircleCenter(Point(-3,4), Point(6,1), Point(4,5)) << endl;
+	vector<Point> v;
+	v.push_back(Point(0,0));
+	v.push_back(Point(5,0));
+	v.push_back(Point(5,5));
+	v.push_back(Point(0,5));
 	// expected: 1 1 1 0 0
-	cerr << PointInPolygon(v, PT(2,2)) << " "
-	<< PointInPolygon(v, PT(2,0)) << " "
-	<< PointInPolygon(v, PT(0,2)) << " "
-	<< PointInPolygon(v, PT(5,2)) << " "
-	<< PointInPolygon(v, PT(2,5)) << endl;
+	cerr << PointInPolygon(v, Point(2,2)) << " "
+	<< PointInPolygon(v, Point(2,0)) << " "
+	<< PointInPolygon(v, Point(0,2)) << " "
+	<< PointInPolygon(v, Point(5,2)) << " "
+	<< PointInPolygon(v, Point(2,5)) << endl;
 	// expected: 0 1 1 1 1
-	cerr << PointOnPolygon(v, PT(2,2)) << " "
-	<< PointOnPolygon(v, PT(2,0)) << " "
-	<< PointOnPolygon(v, PT(0,2)) << " "
-	<< PointOnPolygon(v, PT(5,2)) << " "
-	<< PointOnPolygon(v, PT(2,5)) << endl;
+	cerr << PointOnPolygon(v, Point(2,2)) << " "
+	<< PointOnPolygon(v, Point(2,0)) << " "
+	<< PointOnPolygon(v, Point(0,2)) << " "
+	<< PointOnPolygon(v, Point(5,2)) << " "
+	<< PointOnPolygon(v, Point(2,5)) << endl;
 	// expected: (1,6)
 	// (5,4) (4,5)
 	// blank line
 	// (4,5) (5,4)
 	// blank line
 	// (4,5) (5,4)
-	vector<PT> u = CircleLineIntersection(PT(0,6), PT(2,6), PT(1,1), 5);
+	vector<Point> u = CircleLineIntersection(Point(0,6), Point(2,6), Point(1,1), 5);
 	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
-	u = CircleLineIntersection(PT(0,9), PT(9,0), PT(1,1), 5);
+	u = CircleLineIntersection(Point(0,9), Point(9,0), Point(1,1), 5);
 	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
-	u = CircleCircleIntersection(PT(1,1), PT(10,10), 5, 5);
+	u = CircleCircleIntersection(Point(1,1), Point(10,10), 5, 5);
 	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
-	u = CircleCircleIntersection(PT(1,1), PT(8,8), 5, 5);
+	u = CircleCircleIntersection(Point(1,1), Point(8,8), 5, 5);
 	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
-	u = CircleCircleIntersection(PT(1,1), PT(4.5,4.5), 10, sqrt(2.0)/2.0);
+	u = CircleCircleIntersection(Point(1,1), Point(4.5,4.5), 10, sqrt(2.0)/2.0);
 	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
-	u = CircleCircleIntersection(PT(1,1), PT(4.5,4.5), 5, sqrt(2.0)/2.0);
+	u = CircleCircleIntersection(Point(1,1), Point(4.5,4.5), 5, sqrt(2.0)/2.0);
 	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
 	// area should be 5.0
 	// centroid should be (1.1666666, 1.166666)
-	PT pa[] = { PT(0,0), PT(5,0), PT(1,1), PT(0,5) };
-	vector<PT> p(pa, pa+4);
-	PT c = ComputeCentroid(p);
+	Point pa[] = { Point(0,0), Point(5,0), Point(1,1), Point(0,5) };
+	vector<Point> p(pa, pa+4);
+	Point c = ComputeCentroid(p);
 	cerr << "Area: " << ComputeArea(p) << endl;
 	cerr << "Centroid: " << c << endl;
 	return 0;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+//  Pick’s Theorem
+//  On a simple polygon constructed on a grid of equal-distanced points,
+//  for area A, the number of interior points I, number of boundary points B,
+//  we have A = I + B / 2 - 1.
+/////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+// Returns true if Rec(a, b) can fit in Rec(c, d)
+//////////////////////////////////////////////////////////////////////////
+bool can_ab_fit_in_cd(double a, double b, double c, double d){
+	if(a * b > c * d) return false;
+	if(a > b) swap(a, b);
+	if(c > d) swap(c, d);
+	if(a > c) return false;
+	if(a <= c && b <= d) return true;
+	double dis = sqrt(a * a + b * b);
+	double P = asin(c / dis);
+	double Q = asin(a / dis);
+	double theta = P - Q;
+	double dd = b * cos(theta) + a * sin(theta);
+	return dd <= d;
+}
+
