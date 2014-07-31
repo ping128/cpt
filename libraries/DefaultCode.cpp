@@ -1,28 +1,17 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <set>
-#include <queue>
-#include <stack>
-#include <list>
-#include <map>
-#include <algorithm>
-#include <time.h>
-
-#include <cassert>
+#include <bits/stdc++.h>
 
 using namespace std;
 
 #define x first
 #define y second
 #define SZ(x) ((int)((x).size()))
+#define S scanf
+#define P printf
+#define PB(x) push_back(x);
 
 typedef long long LL;
 typedef pair<int, int> PII; typedef pair<PII, int> PII2;
-typedef vector<int> VI; typedef vector<VI> VVI; typedef vector<PII> VP;
+typedef vector<int> VI; typedef vector<VI> VVI;
 
 int main() {
     

@@ -5,10 +5,21 @@
 //    alias g++="g++ -O2 -std=gnu++0x -Wall -Wshadow"
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <sstream>
+#include <vector>
 #include <set>
+#include <queue>
+#include <stack>
+#include <list>
+#include <map>
 #include <algorithm>
+#include <time.h>
+
+#include <cassert>
 
 using namespace std;
 
