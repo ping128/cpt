@@ -5,8 +5,6 @@ using namespace std;
 #define x first
 #define y second
 #define SZ(x) ((int)((x).size()))
-#define S scanf
-#define P printf
 #define PB(x) push_back(x);
 
 typedef long long LL;
