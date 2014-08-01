@@ -17,3 +17,4 @@ C-x u           Undo
 C-_             Undo multiple times
 
 M-{, }          Move cursor up/down one block
+C-arrow up/down Move cursor up/down one block (linux)
