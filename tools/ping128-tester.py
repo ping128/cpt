@@ -1,4 +1,4 @@
-#!/urs/bin/env python
+#!/usr/bin/env python
 
 #
 # Only support .cpp files
@@ -13,11 +13,13 @@ import glob
 GCC = "g++ -O2 -std=gnu++0x -Wall -Wshadow "
 
 def print_usage():
-
     print "Usage:"
-    print "python ping128-tester.py filename                -- expected filename.in"
-    print "python ping128-tester.py filename compare        -- expected filename.in filename.ans"
-    print "python ping128-tester.py filename path_to_folder input_file_format output_file_format"
+    print "./ping128-tester.py filename"
+    print "\tEx: ./ping128-tester.py a - to run a.cpp with a.in"
+    print "./ping128-tester.py filename compare"
+    print "\tEx: ./ping128-tester.py a compare - to run a.cpp and with a.in and a.ans"
+    print "./ping128-tester.py filename path_to_folder input_file_format output_file_format"
+    print "\tEx: ./ping128-tester.py a testdata/secret .in .ans"
 
 def run(arg, testfile="", ansfile="", first=True):
     good = True
