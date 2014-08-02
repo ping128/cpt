@@ -26,8 +26,9 @@ typedef vector<int> VI; typedef vector<VI> VVI;
 typedef pair<LL, LL> PLL; typedef pair<PLL, LL> PLL2;
 #define MOD (1000000007)
 
-// The number of delimiter the class will use is equal to the number of strings added
-// Please make sure that the delimiters won't appear in the input strings
+// The number of delimiters the class will use is equal to the number of strings added
+// Please make sure that all the delimiters won't appear in the input strings
+// Example of delimiters
 // '\1' -> '\1', '\2', '\3', '\4', ... (these characters are invisible)
 // '#'  -> '#', '$', '%', '&', ...
 template<char FIRST_DELIMITER>
@@ -55,7 +56,7 @@ public:
     void add_string(string s) {
         strings.PB(s); concat_s += s;
         for (char c : s) { alphabets.insert(c); }
-        concat_s += FIRST_DELIMITER + (SZ(strings) - 1); // delimiter
+        concat_s += FIRST_DELIMITER + (SZ(strings) - 1); // added a delimiter in between strings
         alphabets.insert(FIRST_DELIMITER + (SZ(strings) - 1));
     }
     void build_suffix_tree() {
@@ -126,6 +127,9 @@ public:
         root->suffix_link = NULL;
     }
     
+    ////////////////////////////////////////////////
+    // Just examples of how to use the tree
+    ////////////////////////////////////////////////
     void print_preorder() {
         cout << "Preorder Traversal: " << endl;
         print_preorder(root);
