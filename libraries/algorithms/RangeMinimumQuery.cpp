@@ -47,15 +47,31 @@ public:
     }
 };
 
+int bruteforce_rmq(int *a, int left, int right) {
+    int ret = a[left];
+    for (int i = left + 1; i <= right; i++) {
+        ret = min(ret, a[i]);
+    }
+    return ret;
+}
+
 int main() {
-    int in[] = {-1, 4, 1, 6, 2, -10, 11, 3, 7, 100};
-    RangeMinimumQuery<int> rmq(in, 10);
-    
+    int N = 15;
+    int in[] = {-1, 4, 1, 6, 2, -10, 11, 3, 7, 100, 4, -123123123, 19, 1, -5};
+    RangeMinimumQuery<int> rmq(in, N);
+
+    for (int i = 0; i < N; i++) {
+        for (int j = i; j < N; j++) {
+            assert(rmq.get_min(i, j) == bruteforce_rmq(in, i, j));
+        }
+    }
+    /*
     assert(rmq.get_min(0, 0) == -1);
     assert(rmq.get_min(0, 9) == -10);
     assert(rmq.get_min(0, 2) == -1);
     assert(rmq.get_min(4, 9) == -10);
     assert(rmq.get_min(3, 3) == 6);
     assert(rmq.get_min(6, 8) == 3);
+    */
     return 0;
 }
