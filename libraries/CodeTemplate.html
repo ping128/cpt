@@ -45,10 +45,11 @@
   <LI><A HREF="#file36">string/ManacherAlgorithm.cpp</A>
   <LI><A HREF="#file37">string/StringMatching.cpp</A>
   <LI><A HREF="#file38">string/SuffixArray.cpp</A>
+  <LI><A HREF="#file39">string/SuffixTree.cpp</A>
 </OL>
 <HR>
 <A NAME="file1">
-<H1>About.cpp 1/38</H1>
+<H1>About.cpp 1/39</H1>
 [<A HREF="#top">top</A>][prev][<A HREF="#file2">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +69,7 @@
 </FONT></I></PRE>
 <HR>
 <A NAME="file2">
-<H1>DefaultCode.cpp 2/38</H1>
+<H1>DefaultCode.cpp 2/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file1">prev</A>][<A HREF="#file3">next</A>]
 <PRE>
 #<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;bits/stdc++.h&gt;</FONT></B>
@@ -78,9 +79,9 @@ using namespace std;
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">x</FONT> first
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">y</FONT> second
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">SZ</FONT></B>(x) ((int)((x).size()))
-#<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">S</FONT> scanf
-#<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">P</FONT> printf
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">PB</FONT></B>(x) push_back(x);
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">INF</FONT> (0x3f3f3f3f)
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">MEMSET</FONT></B>(x,v) memset(x,v,sizeof(x));
 
 <B><FONT COLOR="#228B22">typedef</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B> LL;
 <B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;<B><FONT COLOR="#228B22">int</FONT></B>, <B><FONT COLOR="#228B22">int</FONT></B>&gt; PII; <B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;PII, <B><FONT COLOR="#228B22">int</FONT></B>&gt; PII2;
@@ -94,7 +95,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file3">
-<H1>Note.cpp 3/38</H1>
+<H1>Note.cpp 3/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file2">prev</A>][<A HREF="#file4">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -188,7 +189,7 @@ set&lt;Shape, ShapeCompare&gt; setShape;
 </PRE>
 <HR>
 <A NAME="file4">
-<H1>algorithms/IntervalSet.cpp 4/38</H1>
+<H1>algorithms/IntervalSet.cpp 4/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file3">prev</A>][<A HREF="#file5">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">////////////////////////////////////////////////////////////
@@ -286,7 +287,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file5">
-<H1>algorithms/MaxRecUnderHistogram.cpp 5/38</H1>
+<H1>algorithms/MaxRecUnderHistogram.cpp 5/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file4">prev</A>][<A HREF="#file6">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">/////////////////////////////////////////////////////////////////////////////
@@ -359,7 +360,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file6">
-<H1>algorithms/RangeMinimumQuery.cpp 6/38</H1>
+<H1>algorithms/RangeMinimumQuery.cpp 6/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file5">prev</A>][<A HREF="#file7">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -387,14 +388,14 @@ using namespace std;
             M[i] = vector&lt;T&gt; (25);
 
         <I><FONT COLOR="#B22222">//initialize M for the intervals with length 1
-</FONT></I>        <B><FONT COLOR="#A020F0">for</FONT></B>(<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N; i++ ) {
+</FONT></I>        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N; i++) {
             M[i][0] = i;
             A[i] = in[i];
         }
         <I><FONT COLOR="#B22222">//compute values from smaller to bigger intervals
-</FONT></I>        <B><FONT COLOR="#A020F0">for</FONT></B>(<B><FONT COLOR="#228B22">int</FONT></B> j = 1; 1&lt;&lt;j &lt;= N; j++ ){
-            <B><FONT COLOR="#A020F0">for</FONT></B>(<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i + (1&lt;&lt;j) - 1 &lt; N; i++ )
-                <B><FONT COLOR="#A020F0">if</FONT></B>(A[M[i][j - 1]] &lt; A[M[i + (1 &lt;&lt; (j - 1))][j - 1]]) M[i][j] = M[i][j - 1];
+</FONT></I>        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> j = 1; 1&lt;&lt;j &lt;= N; j++){
+            <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i + (1&lt;&lt;j) - 1 &lt; N; i++)
+                <B><FONT COLOR="#A020F0">if</FONT></B> (A[M[i][j - 1]] &lt; A[M[i + (1 &lt;&lt; (j - 1))][j - 1]]) M[i][j] = M[i][j - 1];
                 <B><FONT COLOR="#A020F0">else</FONT></B> M[i][j] = M[i + (1 &lt;&lt; (j - 1))][j - 1];
         }
     }
@@ -404,29 +405,45 @@ using namespace std;
 </FONT></I>    <B><FONT COLOR="#228B22">int</FONT></B> get_min(<B><FONT COLOR="#228B22">int</FONT></B> left, <B><FONT COLOR="#228B22">int</FONT></B> right) {
         <B><FONT COLOR="#228B22">int</FONT></B> num = right - left + 1;
         <B><FONT COLOR="#228B22">int</FONT></B> e = 1, k = 0;
-        <B><FONT COLOR="#A020F0">while</FONT></B>(e * 2 &lt;= num) e *= 2, k++;
+        <B><FONT COLOR="#A020F0">while</FONT></B> (e * 2 &lt;= num) e *= 2, k++;
         <B><FONT COLOR="#228B22">int</FONT></B> temp = right - e + 1;
-        <B><FONT COLOR="#A020F0">if</FONT></B>(A[M[left][k]] &lt;= A[M[temp][k]]) <B><FONT COLOR="#A020F0">return</FONT></B> A[M[left][k]];
+        <B><FONT COLOR="#A020F0">if</FONT></B> (A[M[left][k]] &lt;= A[M[temp][k]]) <B><FONT COLOR="#A020F0">return</FONT></B> A[M[left][k]];
         <B><FONT COLOR="#A020F0">else</FONT></B> <B><FONT COLOR="#A020F0">return</FONT></B> A[M[temp][k]];
     }
 };
 
+<B><FONT COLOR="#228B22">int</FONT></B> <B><FONT COLOR="#0000FF">bruteforce_rmq</FONT></B>(<B><FONT COLOR="#228B22">int</FONT></B> *a, <B><FONT COLOR="#228B22">int</FONT></B> left, <B><FONT COLOR="#228B22">int</FONT></B> right) {
+    <B><FONT COLOR="#228B22">int</FONT></B> ret = a[left];
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = left + 1; i &lt;= right; i++) {
+        ret = min(ret, a[i]);
+    }
+    <B><FONT COLOR="#A020F0">return</FONT></B> ret;
+}
+
 <B><FONT COLOR="#228B22">int</FONT></B> <B><FONT COLOR="#0000FF">main</FONT></B>() {
-    <B><FONT COLOR="#228B22">int</FONT></B> in[] = {-1, 4, 1, 6, 2, -10, 11, 3, 7, 100};
-    RangeMinimumQuery&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; rmq(in, 10);
-    
+    <B><FONT COLOR="#228B22">int</FONT></B> N = 15;
+    <B><FONT COLOR="#228B22">int</FONT></B> in[] = {-1, 4, 1, 6, 2, -10, 11, 3, 7, 100, 4, -123123123, 19, 1, -5};
+    RangeMinimumQuery&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; rmq(in, N);
+
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N; i++) {
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> j = i; j &lt; N; j++) {
+            assert(rmq.get_min(i, j) == bruteforce_rmq(in, i, j));
+        }
+    }
+    <I><FONT COLOR="#B22222">/*
     assert(rmq.get_min(0, 0) == -1);
     assert(rmq.get_min(0, 9) == -10);
     assert(rmq.get_min(0, 2) == -1);
     assert(rmq.get_min(4, 9) == -10);
     assert(rmq.get_min(3, 3) == 6);
     assert(rmq.get_min(6, 8) == 3);
+    */</FONT></I>
     <B><FONT COLOR="#A020F0">return</FONT></B> 0;
 }
 </PRE>
 <HR>
 <A NAME="file7">
-<H1>data_structure/CentroidDecomposition.cpp 7/38</H1>
+<H1>data_structure/CentroidDecomposition.cpp 7/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file6">prev</A>][<A HREF="#file8">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">/////////////////////////////////////////////////////////
@@ -523,7 +540,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file8">
-<H1>data_structure/FenwickTree.cpp 8/38</H1>
+<H1>data_structure/FenwickTree.cpp 8/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file7">prev</A>][<A HREF="#file9">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -588,7 +605,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file9">
-<H1>data_structure/HeavyLightDecomposition.cpp 9/38</H1>
+<H1>data_structure/HeavyLightDecomposition.cpp 9/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file8">prev</A>][<A HREF="#file10">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -824,7 +841,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file10">
-<H1>data_structure/LazySegmentTree.cpp 10/38</H1>
+<H1>data_structure/LazySegmentTree.cpp 10/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file9">prev</A>][<A HREF="#file11">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -946,7 +963,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file11">
-<H1>data_structure/SegmentTree.cpp 11/38</H1>
+<H1>data_structure/SegmentTree.cpp 11/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file10">prev</A>][<A HREF="#file12">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -1054,7 +1071,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file12">
-<H1>data_structure/Treap.cpp 12/38</H1>
+<H1>data_structure/Treap.cpp 12/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file11">prev</A>][<A HREF="#file13">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -1319,7 +1336,7 @@ ostream&amp; <B><FONT COLOR="#A020F0">operator</FONT></B> &lt;&lt; (ostream &amp
 </PRE>
 <HR>
 <A NAME="file13">
-<H1>dp/ConvexHullOptimization.cpp 13/38</H1>
+<H1>dp/ConvexHullOptimization.cpp 13/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file12">prev</A>][<A HREF="#file14">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1404,7 +1421,7 @@ LL dp[MAXN];
 </PRE>
 <HR>
 <A NAME="file14">
-<H1>geometry/ClosestPair.cpp 14/38</H1>
+<H1>geometry/ClosestPair.cpp 14/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file13">prev</A>][<A HREF="#file15">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -1546,7 +1563,7 @@ Point in[MAXN];
 </PRE>
 <HR>
 <A NAME="file15">
-<H1>geometry/EarthCoordinates.cpp 15/38</H1>
+<H1>geometry/EarthCoordinates.cpp 15/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file14">prev</A>][<A HREF="#file16">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -1580,7 +1597,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file16">
-<H1>geometry/Line.cpp 16/38</H1>
+<H1>geometry/Line.cpp 16/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file15">prev</A>][<A HREF="#file17">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -1629,7 +1646,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file17">
-<H1>geometry/Util.cpp 17/38</H1>
+<H1>geometry/Util.cpp 17/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file16">prev</A>][<A HREF="#file18">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -2010,7 +2027,7 @@ Point <B><FONT COLOR="#0000FF">ComputeCentroid</FONT></B>(<B><FONT COLOR="#228B2
 </PRE>
 <HR>
 <A NAME="file18">
-<H1>graph/BiconnectedComponent.cpp 18/38</H1>
+<H1>graph/BiconnectedComponent.cpp 18/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file17">prev</A>][<A HREF="#file19">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -2116,7 +2133,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file19">
-<H1>graph/Dinic.cpp 19/38</H1>
+<H1>graph/Dinic.cpp 19/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file18">prev</A>][<A HREF="#file20">next</A>]
 <PRE>
 
@@ -2242,7 +2259,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file20">
-<H1>graph/EulerCircuit.cpp 20/38</H1>
+<H1>graph/EulerCircuit.cpp 20/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file19">prev</A>][<A HREF="#file21">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -2422,7 +2439,7 @@ int main() {
 </PRE>
 <HR>
 <A NAME="file21">
-<H1>graph/FordFulkerson.cpp 21/38</H1>
+<H1>graph/FordFulkerson.cpp 21/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file20">prev</A>][<A HREF="#file22">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">/////////////////////////////////////////////////////
@@ -2522,7 +2539,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file22">
-<H1>graph/GlobalMinCut.cpp 22/38</H1>
+<H1>graph/GlobalMinCut.cpp 22/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file21">prev</A>][<A HREF="#file23">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -2613,7 +2630,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file23">
-<H1>graph/LCA.cpp 23/38</H1>
+<H1>graph/LCA.cpp 23/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file22">prev</A>][<A HREF="#file24">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////
@@ -2714,7 +2731,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file24">
-<H1>graph/MaximumBipartiteMatching.cpp 24/38</H1>
+<H1>graph/MaximumBipartiteMatching.cpp 24/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file23">prev</A>][<A HREF="#file25">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////////////////
@@ -2782,7 +2799,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file25">
-<H1>graph/MinCostFlow.cpp 25/38</H1>
+<H1>graph/MinCostFlow.cpp 25/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file24">prev</A>][<A HREF="#file26">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////
@@ -2911,7 +2928,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file26">
-<H1>graph/MinCostFlow_required_flow.cpp 26/38</H1>
+<H1>graph/MinCostFlow_required_flow.cpp 26/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file25">prev</A>][<A HREF="#file27">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">//////////////////////////////////////////////////////////////////////////////////////
@@ -3045,7 +3062,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file27">
-<H1>graph/MinimumPathCoverDAG.cpp 27/38</H1>
+<H1>graph/MinimumPathCoverDAG.cpp 27/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file26">prev</A>][<A HREF="#file28">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////////////////
@@ -3156,7 +3173,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file28">
-<H1>graph/MinimumSpanningTree.cpp 28/38</H1>
+<H1>graph/MinimumSpanningTree.cpp 28/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file27">prev</A>][<A HREF="#file29">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">////////////////////////////////////////////////////////////////////////////////////
@@ -3225,7 +3242,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file29">
-<H1>graph/ShortestPath.cpp 29/38</H1>
+<H1>graph/ShortestPath.cpp 29/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file28">prev</A>][<A HREF="#file30">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -3310,7 +3327,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file30">
-<H1>graph/StronglyConnectedComponent.cpp 30/38</H1>
+<H1>graph/StronglyConnectedComponent.cpp 30/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file29">prev</A>][<A HREF="#file31">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -3391,7 +3408,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file31">
-<H1>number/LinearAlgebra.cpp 31/38</H1>
+<H1>number/LinearAlgebra.cpp 31/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file30">prev</A>][<A HREF="#file32">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -3736,7 +3753,7 @@ T GaussJordan(VVT &amp;a, VVT &amp;b) {
 </PRE>
 <HR>
 <A NAME="file32">
-<H1>number/Matrix.cpp 32/38</H1>
+<H1>number/Matrix.cpp 32/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file31">prev</A>][<A HREF="#file33">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -3822,7 +3839,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file33">
-<H1>number/ModInt.cpp 33/38</H1>
+<H1>number/ModInt.cpp 33/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file32">prev</A>][<A HREF="#file34">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -3880,7 +3897,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file34">
-<H1>number/PrimeGenerator.cpp 34/38</H1>
+<H1>number/PrimeGenerator.cpp 34/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file33">prev</A>][<A HREF="#file35">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">////////////////////////////////////////////////////////////////////////////////
@@ -3969,7 +3986,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file35">
-<H1>number/Rational.cpp 35/38</H1>
+<H1>number/Rational.cpp 35/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file34">prev</A>][<A HREF="#file36">next</A>]
 <PRE>
 #<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;iostream&gt;</FONT></B>
@@ -4024,7 +4041,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file36">
-<H1>string/ManacherAlgorithm.cpp 36/38</H1>
+<H1>string/ManacherAlgorithm.cpp 36/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file35">prev</A>][<A HREF="#file37">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -4123,7 +4140,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file37">
-<H1>string/StringMatching.cpp 37/38</H1>
+<H1>string/StringMatching.cpp 37/39</H1>
 [<A HREF="#top">top</A>][<A HREF="#file36">prev</A>][<A HREF="#file38">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -4244,8 +4261,8 @@ vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; prefix_function (string s)
 </PRE>
 <HR>
 <A NAME="file38">
-<H1>string/SuffixArray.cpp 38/38</H1>
-[<A HREF="#top">top</A>][<A HREF="#file37">prev</A>][next]
+<H1>string/SuffixArray.cpp 38/39</H1>
+[<A HREF="#top">top</A>][<A HREF="#file37">prev</A>][<A HREF="#file39">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">/////////////////////////////////////////////////////////////////////////////////////////////
 </FONT></I><I><FONT COLOR="#B22222">//  Suffix Array
@@ -4340,6 +4357,284 @@ using namespace std;
         printf(<B><FONT COLOR="#BC8F8F">&quot;%d &quot;</FONT></B>, sa.SA[i]);
     }
     printf(<B><FONT COLOR="#BC8F8F">&quot;\n&quot;</FONT></B>);
+    <B><FONT COLOR="#A020F0">return</FONT></B> 0;
+}
+</PRE>
+<HR>
+<A NAME="file39">
+<H1>string/SuffixTree.cpp 39/39</H1>
+[<A HREF="#top">top</A>][<A HREF="#file38">prev</A>][next]
+<PRE>
+<I><FONT COLOR="#B22222">/////////////////////////////////////////////////////////////////////////////////
+</FONT></I><I><FONT COLOR="#B22222">//  Suffix Tree
+</FONT></I><I><FONT COLOR="#B22222">//  by Ukkonen's algorithm in O(N * alphabetSize)
+</FONT></I><I><FONT COLOR="#B22222">//
+</FONT></I><I><FONT COLOR="#B22222">//  There are 2 more methods added to solve this problem:
+</FONT></I><I><FONT COLOR="#B22222">//  http://codeforces.com/contest/452/problem/E
+</FONT></I><I><FONT COLOR="#B22222">//    - For each valid l, find the number of common substrings of lengh l
+</FONT></I><I><FONT COLOR="#B22222">//      that are in all three given strings
+</FONT></I><I><FONT COLOR="#B22222">/////////////////////////////////////////////////////////////////////////////////
+</FONT></I>
+#<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;bits/stdc++.h&gt;</FONT></B>
+
+using namespace std;
+
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">x</FONT> first
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">y</FONT> second
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">SZ</FONT></B>(x) ((int)((x).size()))
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">PB</FONT></B>(x) push_back(x);
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">INF</FONT> (0x3f3f3f3f)
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">MEMSET</FONT></B>(x,v) memset(x,v,sizeof(x));
+
+<B><FONT COLOR="#228B22">typedef</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B> LL;
+<B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;<B><FONT COLOR="#228B22">int</FONT></B>, <B><FONT COLOR="#228B22">int</FONT></B>&gt; PII; <B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;PII, <B><FONT COLOR="#228B22">int</FONT></B>&gt; PII2;
+<B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; VI; <B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;VI&gt; VVI;
+
+<B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;LL, LL&gt; PLL; <B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;PLL, LL&gt; PLL2;
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">MOD</FONT> (1000000007)
+
+<I><FONT COLOR="#B22222">// The number of delimiters the class will use is equal to the number of strings added
+</FONT></I><I><FONT COLOR="#B22222">// Please make sure that all the delimiters won't appear in the input strings
+</FONT></I><I><FONT COLOR="#B22222">// Example of delimiters
+</FONT></I><I><FONT COLOR="#B22222">// '\1' -&gt; '\1', '\2', '\3', '\4', ... (these characters are invisible)
+</FONT></I><I><FONT COLOR="#B22222">// '#'  -&gt; '#', '$', '%', '&amp;', ...
+</FONT></I><B><FONT COLOR="#228B22">template</FONT></B>&lt;<B><FONT COLOR="#228B22">char</FONT></B> FIRST_DELIMITER&gt;
+<B><FONT COLOR="#228B22">class</FONT></B> SuffixTree {
+<B><FONT COLOR="#228B22">public</FONT></B>:
+    <B><FONT COLOR="#228B22">class</FONT></B> Node {
+    <B><FONT COLOR="#228B22">public</FONT></B>:
+        <B><FONT COLOR="#228B22">int</FONT></B> begin, end; <I><FONT COLOR="#B22222">// s[begin...end-1]
+</FONT></I>        <B><FONT COLOR="#228B22">int</FONT></B> depth; <I><FONT COLOR="#B22222">// depth by chars from the root to this node
+</FONT></I>        Node *parent;
+        vector&lt;Node*&gt; children;
+        Node *suffix_link;
+        Node(<B><FONT COLOR="#228B22">int</FONT></B> b, <B><FONT COLOR="#228B22">int</FONT></B> e, <B><FONT COLOR="#228B22">int</FONT></B> d, Node *p, <B><FONT COLOR="#228B22">int</FONT></B> alpha_size) : begin(b), end(e), depth(d) , parent(p) {
+            children = vector&lt;Node*&gt;(alpha_size);
+            <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; alpha_size; i++) children[i] = NULL;
+            suffix_link = NULL;
+        }
+        <B><FONT COLOR="#228B22">bool</FONT></B> contains(<B><FONT COLOR="#228B22">int</FONT></B> d) { <B><FONT COLOR="#A020F0">return</FONT></B> depth &lt;= d &amp;&amp; d &lt; depth + (end - begin); }
+    };
+    Node *root;
+    vector&lt;string&gt; strings;
+    set&lt;<B><FONT COLOR="#228B22">char</FONT></B>&gt; alphabets;
+    string concat_s;
+    SuffixTree() { root = NULL; concat_s = <B><FONT COLOR="#BC8F8F">&quot;&quot;</FONT></B>; }
+    <B><FONT COLOR="#228B22">void</FONT></B> add_string(string s) {
+        strings.PB(s); concat_s += s;
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">char</FONT></B> c : s) { alphabets.insert(c); }
+        concat_s += FIRST_DELIMITER + (SZ(strings) - 1); <I><FONT COLOR="#B22222">// added a delimiter in between strings
+</FONT></I>        alphabets.insert(FIRST_DELIMITER + (SZ(strings) - 1));
+    }
+    <B><FONT COLOR="#228B22">void</FONT></B> build_suffix_tree() {
+        <B><FONT COLOR="#228B22">int</FONT></B> alphabet_size = SZ(alphabets);
+        <B><FONT COLOR="#228B22">int</FONT></B> N = SZ(concat_s);
+        VI a(N);
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N; i++) {
+            <B><FONT COLOR="#228B22">int</FONT></B> j = 0;
+            <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">char</FONT></B> c : alphabets) { <B><FONT COLOR="#A020F0">if</FONT></B> (concat_s[i] == c) { a[i] = j; <B><FONT COLOR="#A020F0">break</FONT></B>; } j++; }
+        }
+        root = <B><FONT COLOR="#A020F0">new</FONT></B> Node(0, 0, 0, NULL, alphabet_size);
+        Node *cn = root; <I><FONT COLOR="#B22222">// root.suffixLink must be null, but that way it gets more convenient processing
+</FONT></I>        root-&gt;suffix_link = root;
+        Node *needs_suffix_link = NULL;
+        <B><FONT COLOR="#228B22">int</FONT></B> last_rule = 0;
+        <B><FONT COLOR="#228B22">int</FONT></B> j = 0;
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = -1; i &lt; N - 1; i++) { <I><FONT COLOR="#B22222">// strings s[j..i] already in tree, add s[i+1] to it
+</FONT></I>            <B><FONT COLOR="#228B22">int</FONT></B> cur = a[i + 1]; <I><FONT COLOR="#B22222">// last char of current string
+</FONT></I>            <B><FONT COLOR="#A020F0">for</FONT></B> (; j &lt;= i + 1; j++) {
+                <B><FONT COLOR="#228B22">int</FONT></B> cur_depth = i + 1 - j;
+                <B><FONT COLOR="#A020F0">if</FONT></B> (last_rule != 3) {
+                    cn = cn-&gt;suffix_link != NULL ? cn-&gt;suffix_link : cn-&gt;parent-&gt;suffix_link;
+                    <B><FONT COLOR="#228B22">int</FONT></B> k = j + cn-&gt;depth;
+                    <B><FONT COLOR="#A020F0">while</FONT></B> (cur_depth &gt; 0 &amp;&amp; !cn-&gt;contains(cur_depth - 1)) {
+                        k += cn-&gt;end - cn-&gt;begin;
+                        cn = cn-&gt;children[a[k]];
+                    }
+                }
+                <B><FONT COLOR="#A020F0">if</FONT></B> (!cn-&gt;contains(cur_depth)) { <I><FONT COLOR="#B22222">// explicit node
+</FONT></I>                    <B><FONT COLOR="#A020F0">if</FONT></B> (needs_suffix_link != NULL) {
+                        needs_suffix_link-&gt;suffix_link = cn;
+                        needs_suffix_link = NULL;
+                    }
+                    <B><FONT COLOR="#A020F0">if</FONT></B> (cn-&gt;children[cur] == NULL) {
+                        <I><FONT COLOR="#B22222">// no extension - add leaf
+</FONT></I>                        cn-&gt;children[cur] = <B><FONT COLOR="#A020F0">new</FONT></B> Node(i + 1, N, cur_depth, cn, alphabet_size);
+                        last_rule = 2;
+                    } <B><FONT COLOR="#A020F0">else</FONT></B> {
+                        cn = cn-&gt;children[cur];
+                        last_rule = 3; <I><FONT COLOR="#B22222">// already exists
+</FONT></I>                        <B><FONT COLOR="#A020F0">break</FONT></B>;
+                    }
+                } <B><FONT COLOR="#A020F0">else</FONT></B> { <I><FONT COLOR="#B22222">// implicit node
+</FONT></I>                    <B><FONT COLOR="#228B22">int</FONT></B> end = cn-&gt;begin + cur_depth - cn-&gt;depth;
+                    <B><FONT COLOR="#A020F0">if</FONT></B> (a[end] != cur) { <I><FONT COLOR="#B22222">// split implicit node here
+</FONT></I>                        Node *newn = <B><FONT COLOR="#A020F0">new</FONT></B> Node(cn-&gt;begin, end, cn-&gt;depth, cn-&gt;parent, alphabet_size);
+                        newn-&gt;children[cur] = <B><FONT COLOR="#A020F0">new</FONT></B> Node(i + 1, N, cur_depth, newn, alphabet_size);
+                        newn-&gt;children[a[end]] = cn;
+                        cn-&gt;parent-&gt;children[a[cn-&gt;begin]] = newn;
+                        <B><FONT COLOR="#A020F0">if</FONT></B> (needs_suffix_link != NULL) {
+                            needs_suffix_link-&gt;suffix_link = newn;
+                        }
+                        cn-&gt;begin = end;
+                        cn-&gt;depth = cur_depth;
+                        cn-&gt;parent = newn;
+                        cn = needs_suffix_link = newn;
+                        last_rule = 2;
+                    } <B><FONT COLOR="#A020F0">else</FONT></B> <B><FONT COLOR="#A020F0">if</FONT></B> (cn-&gt;end != N || cn-&gt;begin - cn-&gt;depth &lt; j) {
+                        last_rule = 3;
+                        <B><FONT COLOR="#A020F0">break</FONT></B>;
+                    } <B><FONT COLOR="#A020F0">else</FONT></B> {
+                        last_rule = 1;
+                    }
+                }
+
+            }
+        }
+        root-&gt;suffix_link = NULL;
+    }
+    
+    <I><FONT COLOR="#B22222">////////////////////////////////////////////////
+</FONT></I>    <I><FONT COLOR="#B22222">// Just examples of how to use the tree
+</FONT></I>    <I><FONT COLOR="#B22222">////////////////////////////////////////////////
+</FONT></I>    <B><FONT COLOR="#228B22">void</FONT></B> print_preorder() {
+        cout &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot;Preorder Traversal: &quot;</FONT></B> &lt;&lt; endl;
+        print_preorder(root);
+    }
+    <B><FONT COLOR="#228B22">void</FONT></B> print_suffix_array() {
+        cout &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot;Suffix Array: &quot;</FONT></B> &lt;&lt; endl;
+        print_suffix_array(root);
+    }
+
+    <B><FONT COLOR="#228B22">int</FONT></B> max_common_len;
+    <B><FONT COLOR="#228B22">int</FONT></B> max_common_begin;
+    <I><FONT COLOR="#B22222">// Maximum Common Substring of the first two strings added
+</FONT></I>    <B><FONT COLOR="#228B22">void</FONT></B> find_max_common_substring() {
+        assert(SZ(strings) &gt;= 2);
+        max_common_len = -1;
+        <B><FONT COLOR="#228B22">int</FONT></B> len1 = SZ(strings[0]);
+        <B><FONT COLOR="#228B22">int</FONT></B> len2 = SZ(strings[1]);
+        find_max_common_substring(root, len1, len1 + len2 + 1);
+        cout &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot;Max Common Substring Length: &quot;</FONT></B> &lt;&lt; max_common_len &lt;&lt; endl;
+        <B><FONT COLOR="#A020F0">if</FONT></B> (max_common_len) {
+            cout &lt;&lt; concat_s.substr(max_common_begin, max_common_len) &lt;&lt; endl;
+        }
+    }
+<B><FONT COLOR="#228B22">private</FONT></B>:
+    pair&lt;<B><FONT COLOR="#228B22">bool</FONT></B>, <B><FONT COLOR="#228B22">bool</FONT></B>&gt; find_max_common_substring(Node *cur, <B><FONT COLOR="#228B22">int</FONT></B> i1, <B><FONT COLOR="#228B22">int</FONT></B> i2) {
+        <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;begin &lt;= i1 &amp;&amp; i1 &lt; cur-&gt;end) {
+            <B><FONT COLOR="#A020F0">return</FONT></B> make_pair(true, false); <I><FONT COLOR="#B22222">// found a suffix of the first string
+</FONT></I>        }
+        <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;begin &lt;= i2 &amp;&amp; i2 &lt; cur-&gt;end) {
+            <B><FONT COLOR="#A020F0">return</FONT></B> make_pair(false, true); <I><FONT COLOR="#B22222">// found a suffix of the second string
+</FONT></I>        }
+        pair&lt;<B><FONT COLOR="#228B22">bool</FONT></B>, <B><FONT COLOR="#228B22">bool</FONT></B>&gt; ret = make_pair(false, false);
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(alphabets); i++) {
+            <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;children[i]) {
+                pair&lt;<B><FONT COLOR="#228B22">bool</FONT></B>, <B><FONT COLOR="#228B22">bool</FONT></B>&gt; temp = find_max_common_substring(cur-&gt;children[i], i1, i2);
+                ret.x |= temp.x;
+                ret.y |= temp.y;
+            }
+        }
+        <B><FONT COLOR="#A020F0">if</FONT></B> (ret.x &amp;&amp; ret.y) { <I><FONT COLOR="#B22222">// found a common substring
+</FONT></I>            <B><FONT COLOR="#228B22">int</FONT></B> len = cur-&gt;depth + cur-&gt;end - cur-&gt;begin;
+            <B><FONT COLOR="#A020F0">if</FONT></B> (len &gt; max_common_len) {
+                max_common_len = len;
+                max_common_begin = cur-&gt;begin - cur-&gt;depth; <I><FONT COLOR="#B22222">// give the starting position of the suffix
+</FONT></I>            }
+        }
+        <B><FONT COLOR="#A020F0">return</FONT></B> ret;
+    }
+    <B><FONT COLOR="#228B22">void</FONT></B> print_preorder(Node *cur) {
+        <B><FONT COLOR="#A020F0">if</FONT></B> (cur == root) cout &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot;ROOT&quot;</FONT></B> &lt;&lt; endl;
+        <B><FONT COLOR="#A020F0">else</FONT></B> cout &lt;&lt; concat_s.substr(cur-&gt;begin, cur-&gt;end - cur-&gt;begin) &lt;&lt; endl;
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(alphabets); i++) {
+            <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;children[i] != NULL) {
+                print_preorder(cur-&gt;children[i]);
+            }
+        }
+    }
+
+    <B><FONT COLOR="#228B22">void</FONT></B> print_suffix_array(Node *cur) {
+       <B><FONT COLOR="#228B22">bool</FONT></B> is_leaf = true;
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(alphabets); i++) {
+            <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;children[i] != NULL) {
+                print_suffix_array(cur-&gt;children[i]);
+                is_leaf = false;
+            }
+        }
+        <B><FONT COLOR="#A020F0">if</FONT></B> (is_leaf) {
+            cout &lt;&lt; concat_s.substr(cur-&gt;begin - cur-&gt;depth, cur-&gt;end - (cur-&gt;begin - cur-&gt;depth)) &lt;&lt; endl;
+        }
+    }
+<B><FONT COLOR="#228B22">public</FONT></B>:
+    <I><FONT COLOR="#B22222">// Add more methods below
+</FONT></I>    PII2 dfs(Node *cur, <B><FONT COLOR="#228B22">int</FONT></B> i1, <B><FONT COLOR="#228B22">int</FONT></B> i2, <B><FONT COLOR="#228B22">int</FONT></B> i3, vector&lt;LL&gt; &amp;ans) {
+        <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;begin &lt;= i1 &amp;&amp; i1 &lt; cur-&gt;end) {
+            <B><FONT COLOR="#A020F0">return</FONT></B> PLL2(PLL(1, 0), 0);
+        }
+        <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;begin &lt;= i2 &amp;&amp; i2 &lt; cur-&gt;end) {
+            <B><FONT COLOR="#A020F0">return</FONT></B> PLL2(PLL(0, 1), 0);
+        }
+        <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;begin &lt;= i3 &amp;&amp; i3 &lt; cur-&gt;end) {
+            <B><FONT COLOR="#A020F0">return</FONT></B> PLL2(PLL(0, 0), 1);
+        }
+        PLL2 ret = PLL2(PLL(0, 0), 0);
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(alphabets); i++) {
+            <B><FONT COLOR="#A020F0">if</FONT></B> (cur-&gt;children[i]) {
+                PLL2 temp = dfs(cur-&gt;children[i], i1, i2, i3, ans);
+                ret.x.x += temp.x.x;
+                ret.x.y += temp.x.y;
+                ret.y += temp.y;
+                ret.x.x %= MOD; ret.x.y %= MOD; ret.y %= MOD;
+            }
+        }
+        LL x = (((ret.x.x * ret.x.y) % MOD) * ret.y) % MOD;
+        <B><FONT COLOR="#228B22">int</FONT></B> len = cur-&gt;depth + cur-&gt;end - cur-&gt;begin;
+        ans[cur-&gt;depth] += x; ans[cur-&gt;depth] %= MOD;
+        ans[len] -= x; <B><FONT COLOR="#A020F0">if</FONT></B> (ans[len] &lt; 0) ans[len] += MOD;
+        <B><FONT COLOR="#A020F0">return</FONT></B> ret;
+    }
+    
+    <B><FONT COLOR="#228B22">void</FONT></B> solve() {
+        vector&lt;LL&gt; ans(SZ(concat_s), 0);
+        <B><FONT COLOR="#228B22">int</FONT></B> len1 = SZ(strings[0]), len2 = SZ(strings[1]), len3 = SZ(strings[2]);
+        dfs(root, len1, len1 + len2 + 1, len1 + len2 + len3 + 2, ans);
+        <B><FONT COLOR="#228B22">int</FONT></B> min_len = min(len1, min(len2, len3));
+        <B><FONT COLOR="#228B22">int</FONT></B> res = 0;
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; min_len; i++) {
+            res += ans[i]; res %= MOD;
+            printf(<B><FONT COLOR="#BC8F8F">&quot;%d &quot;</FONT></B>, (<B><FONT COLOR="#228B22">int</FONT></B>)res);
+        }
+    }
+};
+
+<B><FONT COLOR="#228B22">int</FONT></B> <B><FONT COLOR="#0000FF">main</FONT></B>() {
+    string s1, s2, s3;
+    SuffixTree&lt;<B><FONT COLOR="#BC8F8F">'#'</FONT></B>&gt; tree;
+    cin &gt;&gt; s1 &gt;&gt; s2 &gt;&gt; s3;
+    tree.add_string(s1);
+    tree.add_string(s2);
+    tree.add_string(s3);
+    tree.build_suffix_tree();
+    tree.solve();
+    <I><FONT COLOR="#B22222">/*
+    {
+        SuffixTree&lt;'#'&gt; tree;
+        tree.add_string(&quot;baab&quot;);
+        tree.build_suffix_tree();
+        tree.print_preorder();
+        tree.print_suffix_array();
+    }
+
+    {
+        SuffixTree&lt;'#'&gt; tree;
+        tree.add_string(&quot;banana&quot;);
+        tree.add_string(&quot;xana&quot;);
+        tree.build_suffix_tree();
+        tree.find_max_common_substring();
+    }
+    */</FONT></I>
     <B><FONT COLOR="#A020F0">return</FONT></B> 0;
 }
 </PRE>
