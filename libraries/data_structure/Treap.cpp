@@ -14,11 +14,6 @@ ostream& operator << (ostream &out, pair<T1, T2> pair) { return out << "(" << pa
 typedef long long LL;
 typedef pair<int, int> PII;
 
-/*
- * Treap Class Declaration
- * 
- * DO NOT FORGET TO CALL SRAND IN MAIN: srand(time(NULL));
- */
 template<class T>
 class Treap {
     typedef struct Treapnode {
@@ -26,49 +21,26 @@ class Treap {
         int fix;
         Treapnode *left, *right;
         int subtree_size;
-
         LL sum; // sum of all keys
-        Treapnode() {
-            left = right = NULL;
-            subtree_size = 0;
-            sum = 0;
-        }
+        Treapnode() { left = right = NULL; subtree_size = 0; sum = 0; }
     } *Treapnode_ptr;
-    
 public:
     Treapnode_ptr root;
-
-    Treap() {
-        root = NULL;
-        srand(time(NULL));
-    }
-    
-    void insert(T key) {
-        insert(this->root, key);
-    }
-    
-    void remove(T key) {
-        remove(this->root, key);
-    }
-
-    void display() {
-        display(this->root, 1);
-    }
-
-    bool find(T key) {
-        return find(this->root, key);
-    }
-
+    int tree_size;
+    Treap() { root = NULL; srand(time(NULL)); tree_size = 0; }
+    void insert(T key) { insert(this->root, key); tree_size = root->subtree_size; }
+    int size() { return tree_size; }
     T find_ksmallest(int k) {
         assert(k >= 1 && k <= this->root->subtree_size);
         return find_ksmallest(this->root, k);
     }
-
     LL find_ksmallest_sum(int k) {
         assert(k >= 1 && k <= this->root->subtree_size);
         return find_ksmallest_sum(this->root, k);
     }
-        
+    void remove(T key) { remove(this->root, key); size = root->subtree_size; }
+    void display() { display(this->root, 1); }
+    bool find(T key) { return find(this->root, key); }
 private:
     void insert(Treapnode_ptr &node, T key) {
         if (node == NULL) {
@@ -92,7 +64,7 @@ private:
         update_size(node);
         update_sum(node);
     }
-
+    
     void remove(Treapnode_ptr &node, T key) {
         if (node) {
             if (key > node->key) {
@@ -129,51 +101,21 @@ private:
             }
         }
     }
-
-    bool find(Treapnode_ptr node, T key) {
-        if (node) {
-            if (node->key == key) return true;
-            else if (key < node->key) return find(node->left, key);
-            else return find(node->right, key);
-        }
-        return false;
-    }
-
+    
     void rotate_left(Treapnode_ptr &node) {
         Treapnode_ptr temp;
-        temp = node->right;
-        node->right = temp->left;
-        temp->left = node;
-        node = temp;
-        update_size(node->left);
-        update_size(node);
-        update_sum(node->left);
-        update_sum(node);
+        temp = node->right; node->right = temp->left;
+        temp->left = node; node = temp;
+        update_size(node->left); update_size(node);
+        update_sum(node->left); update_sum(node);
     }
 
     void rotate_right(Treapnode_ptr &node) {
         Treapnode_ptr temp;
-        temp = node->left;
-        node->left = temp->right;
-        temp->right = node;
-        node = temp;
-        update_size(node->right);
-        update_size(node);
-        update_sum(node->right);
-        update_sum(node);
-    }
-
-    void display(Treapnode_ptr node, int level) {
-        if (node) {
-            display(node->right, level + 1);
-            if (node == this->root)
-                cout << "Root->: ";
-            else
-                for (int i = 0; i < level; i++)
-                    cout << "\t";
-            cout << "key: " << node->key << ", sz: " << node->subtree_size << endl;
-            display(node->left, level + 1);
-        }
+        temp = node->left; node->left = temp->right;
+        temp->right = node; node = temp;
+        update_size(node->right); update_size(node);
+        update_sum(node->right); update_sum(node);
     }
 
     void update_size(Treapnode_ptr node) {
@@ -224,8 +166,27 @@ private:
         }
         return res;
     }
+    bool find(Treapnode_ptr node, T key) {
+        if (node) {
+            if (node->key == key) return true;
+            else if (key < node->key) return find(node->left, key);
+            else return find(node->right, key);
+        }
+        return false;
+    }
+    void display(Treapnode_ptr node, int level) {
+        if (node) {
+            display(node->right, level + 1);
+            if (node == this->root)
+                cout << "Root->: ";
+            else
+                for (int i = 0; i < level; i++)
+                    cout << "\t";
+            cout << "key: " << node->key << ", sz: " << node->subtree_size << endl;
+            display(node->left, level + 1);
+        }
+    }
 };
-
 
 ////////////////
 //  USAGE
