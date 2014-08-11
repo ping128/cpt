@@ -40,6 +40,7 @@ public:
 
     Treap() {
         root = NULL;
+        srand(time(NULL));
     }
     
     void insert(T key) {
@@ -231,7 +232,6 @@ private:
 ////////////////
 
 int main() {
-    srand(time(NULL));
     Treap<PII> tree;
     tree.insert(PII(1, 0));
     tree.insert(PII(5, 0));
