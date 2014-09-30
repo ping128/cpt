@@ -172,6 +172,23 @@ Point ComputeCircleCenter(Point a, Point b, Point c) {
     return ComputeLineIntersection(b, b+RotateCW90(a-b), c, c+RotateCW90(a-c));
 }
 
+// compute center of circle given 2 points and its radius
+// idea:
+//   1. Find the vector passing between a and b -> (x2-x1, y2-y1)
+//   2. Find the mirror vector between a and b -> (y2-y1, x1-x2)
+//   3. Normalize the mirror vector ((y2-y1)/d, (x1-x2)/d)
+//   4. Use the distance between the center and the midpoint and 3.
+//      to compute the center.
+Point ComputeCircleCenter(Point a, Point b, double r) {
+    double x1 = a.x, y1 = a.y;
+    double x2 = b.x, y2 = b.y;
+    double mid_x = (x1 + x2) / 2, mid_y = (y1 + y2) / 2;
+    double d = sqrt(dist2(a, b));
+    double cx = x3 + sqrt(r*r-(d/2)*(d/2))*(y1-y2)/d;
+    double cy = y3 + sqrt(r*r-(d/2)*(d/2))*(x2-x1)/d;
+    return Point(cx, cy);
+}
+
 // determine if point is in a possibly non-convex polygon (by William
 // Randolph Franklin); returns 1 for strictly interior points, 0 for
 // strictly exterior points, and 0 or 1 for the remaining points.
