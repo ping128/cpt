@@ -75,26 +75,26 @@ void ConvexHull(vector<Point> &pts) {
     sort(pts.begin(), pts.end());
     pts.erase(unique(pts.begin(), pts.end()), pts.end());
     vector<Point> up, dn;
-    for (int i = 0; i < pts.size(); i++) {
-        while (up.size() > 1 && area2(up[up.size()-2], up.back(), pts[i]) >= 0) // concave down
+    for (int i = 0; i < SZ(pts); i++) {
+        while (SZ(up) > 1 && area2(up[SZ(up)-2], up.back(), pts[i]) >= 0) // concave down
             up.pop_back();
-        while (dn.size() > 1 && area2(dn[dn.size()-2], dn.back(), pts[i]) <= 0) // concave up
+        while (SZ(dn) > 1 && area2(dn[SZ(dn)-2], dn.back(), pts[i]) <= 0) // concave up
             dn.pop_back();
         up.push_back(pts[i]);
 		dn.push_back(pts[i]);
     }
     pts = dn;
-    for (int i = (int) up.size() - 2; i >= 1; i--) pts.push_back(up[i]);
+    for (int i = (int) SZ(up) - 2; i >= 1; i--) pts.push_back(up[i]);
 #ifdef REMOVE_REDUNDANT
-    if (pts.size() <= 2) return;
+    if (SZ(pts) <= 2) return;
     dn.clear();
     dn.push_back(pts[0]);
     dn.push_back(pts[1]);
-    for (int i = 2; i < pts.size(); i++){
-        if (between(dn[dn.size()-2], dn[dn.size()-1], pts[i])) dn.pop_back();
+    for (int i = 2; i < SZ(pts); i++){
+        if (between(dn[SZ(dn)-2], dn[SZ(dn)-1], pts[i])) dn.pop_back();
 		dn.push_back(pts[i]);
     }
-    if (dn.size() >= 3 && between(dn.back(), dn[0], dn[1])) {
+    if (SZ(dn) >= 3 && between(dn.back(), dn[0], dn[1])) {
         dn[0] = dn.back();
         dn.pop_back();
     }
@@ -179,14 +179,17 @@ Point ComputeCircleCenter(Point a, Point b, Point c) {
 //   3. Normalize the mirror vector ((y2-y1)/d, (x1-x2)/d)
 //   4. Use the distance between the center and the midpoint and 3.
 //      to compute the center.
-Point ComputeCircleCenter(Point a, Point b, double r) {
-    double x1 = a.x, y1 = a.y;
-    double x2 = b.x, y2 = b.y;
-    double mid_x = (x1 + x2) / 2, mid_y = (y1 + y2) / 2;
+// Returns two possible centers
+vector<Point> ComputeCircleCenter(Point a, Point b, double r) {
+    vector<Point> res;
+    Point mid = (a + b) / 2;
     double d = sqrt(dist2(a, b));
-    double cx = x3 + sqrt(r*r-(d/2)*(d/2))*(y1-y2)/d;
-    double cy = y3 + sqrt(r*r-(d/2)*(d/2))*(x2-x1)/d;
-    return Point(cx, cy);
+    Point v_ab = b - a;
+    Point v1 = RotateCW90(v_ab) / d;
+    double d2 = sqrt(r * r - (d / 2) * (d / 2));
+    res.push_back(mid + v1 * d2);
+    res.push_back(mid - v1 * d2);
+    return res;
 }
 
 // determine if point is in a possibly non-convex polygon (by William
@@ -198,8 +201,8 @@ Point ComputeCircleCenter(Point a, Point b, double r) {
 // tests for checking point on polygon boundary
 bool PointInPolygon(const vector<Point> &p, Point q) {
     bool c = 0;
-    for (int i = 0; i < p.size(); i++){
-        int j = (i+1)%p.size();
+    for (int i = 0; i < SZ(p); i++){
+        int j = (i+1)%SZ(p);
         if ((p[i].y <= q.y && q.y < p[j].y || p[j].y <= q.y && q.y < p[i].y) &&	
             q.x < p[i].x + (p[j].x - p[i].x) * (q.y - p[i].y) / (p[j].y - p[i].y))
             c = !c;
@@ -209,8 +212,8 @@ bool PointInPolygon(const vector<Point> &p, Point q) {
 
 // determine if point is on the boundary of a polygon
 bool PointOnPolygon(const vector<Point> &p, Point q) {
-    for (int i = 0; i < p.size(); i++)
-        if (dist2(ProjectPointSegment(p[i], p[(i+1)%p.size()], q), q) < EPS)
+    for (int i = 0; i < SZ(p); i++)
+        if (dist2(ProjectPointSegment(p[i], p[(i+1)%SZ(p)], q), q) < EPS)
             return true;
     return false;
 }
@@ -253,8 +256,8 @@ vector<Point> CircleCircleIntersection(Point a, Point b, double r, double R) {
 // the "center of gravity" or "center of mass".
 double ComputeSignedArea(const vector<Point> &p) {
     double area = 0;
-    for(int i = 0; i < p.size(); i++) {
-        int j = (i+1) % p.size();
+    for(int i = 0; i < SZ(p); i++) {
+        int j = (i+1) % SZ(p);
         area += p[i].x*p[j].y - p[j].x*p[i].y;
     }
     return area / 2.0;
@@ -267,8 +270,8 @@ double ComputeArea(const vector<Point> &p) {
 Point ComputeCentroid(const vector<Point> &p) {
     Point c(0,0);
     double scale = 6.0 * ComputeSignedArea(p);
-    for (int i = 0; i < p.size(); i++){
-        int j = (i+1) % p.size();
+    for (int i = 0; i < SZ(p); i++){
+        int j = (i+1) % SZ(p);
         c = c + (p[i]+p[j])*(p[i].x*p[j].y - p[j].x*p[i].y);
     }
     return c / scale;
@@ -276,10 +279,10 @@ Point ComputeCentroid(const vector<Point> &p) {
 
 // tests whether or not a given polygon (in CW or CCW order) is simple
 bool IsSimple(const vector<Point> &p) {
-    for (int i = 0; i < p.size(); i++) {
-        for (int k = i+1; k < p.size(); k++) {
-            int j = (i+1) % p.size();
-            int l = (k+1) % p.size();
+    for (int i = 0; i < SZ(p); i++) {
+        for (int k = i+1; k < SZ(p); k++) {
+            int j = (i+1) % SZ(p);
+            int l = (k+1) % SZ(p);
             if (i == l || j == k) continue;
             if (SegmentsIntersect(p[i], p[j], p[k], p[l]))
                 return false;
@@ -344,17 +347,17 @@ int main() {
 	// blank line
 	// (4,5) (5,4)
 	vector<Point> u = CircleLineIntersection(Point(0,6), Point(2,6), Point(1,1), 5);
-	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
+	for (int i = 0; i < SZ(u); i++) cerr << u[i] << " "; cerr << endl;
 	u = CircleLineIntersection(Point(0,9), Point(9,0), Point(1,1), 5);
-	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
+	for (int i = 0; i < SZ(u); i++) cerr << u[i] << " "; cerr << endl;
 	u = CircleCircleIntersection(Point(1,1), Point(10,10), 5, 5);
-	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
+	for (int i = 0; i < SZ(u); i++) cerr << u[i] << " "; cerr << endl;
 	u = CircleCircleIntersection(Point(1,1), Point(8,8), 5, 5);
-	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
+	for (int i = 0; i < SZ(u); i++) cerr << u[i] << " "; cerr << endl;
 	u = CircleCircleIntersection(Point(1,1), Point(4.5,4.5), 10, sqrt(2.0)/2.0);
-	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
+	for (int i = 0; i < SZ(u); i++) cerr << u[i] << " "; cerr << endl;
 	u = CircleCircleIntersection(Point(1,1), Point(4.5,4.5), 5, sqrt(2.0)/2.0);
-	for (int i = 0; i < u.size(); i++) cerr << u[i] << " "; cerr << endl;
+	for (int i = 0; i < SZ(u); i++) cerr << u[i] << " "; cerr << endl;
 	// area should be 5.0
 	// centroid should be (1.1666666, 1.166666)
 	Point pa[] = { Point(0,0), Point(5,0), Point(1,1), Point(0,5) };
