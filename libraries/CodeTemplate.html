@@ -1776,26 +1776,26 @@ Point <B><FONT COLOR="#0000FF">RotateCCW</FONT></B>(Point p, <B><FONT COLOR="#22
     sort(pts.begin(), pts.end());
     pts.erase(unique(pts.begin(), pts.end()), pts.end());
     vector&lt;Point&gt; up, dn;
-    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; pts.size(); i++) {
-        <B><FONT COLOR="#A020F0">while</FONT></B> (up.size() &gt; 1 &amp;&amp; area2(up[up.size()-2], up.back(), pts[i]) &gt;= 0) <I><FONT COLOR="#B22222">// concave down
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(pts); i++) {
+        <B><FONT COLOR="#A020F0">while</FONT></B> (SZ(up) &gt; 1 &amp;&amp; area2(up[SZ(up)-2], up.back(), pts[i]) &gt;= 0) <I><FONT COLOR="#B22222">// concave down
 </FONT></I>            up.pop_back();
-        <B><FONT COLOR="#A020F0">while</FONT></B> (dn.size() &gt; 1 &amp;&amp; area2(dn[dn.size()-2], dn.back(), pts[i]) &lt;= 0) <I><FONT COLOR="#B22222">// concave up
+        <B><FONT COLOR="#A020F0">while</FONT></B> (SZ(dn) &gt; 1 &amp;&amp; area2(dn[SZ(dn)-2], dn.back(), pts[i]) &lt;= 0) <I><FONT COLOR="#B22222">// concave up
 </FONT></I>            dn.pop_back();
         up.push_back(pts[i]);
 		dn.push_back(pts[i]);
     }
     pts = dn;
-    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = (<B><FONT COLOR="#228B22">int</FONT></B>) up.size() - 2; i &gt;= 1; i--) pts.push_back(up[i]);
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = (<B><FONT COLOR="#228B22">int</FONT></B>) SZ(up) - 2; i &gt;= 1; i--) pts.push_back(up[i]);
 #<B><FONT COLOR="#5F9EA0">ifdef</FONT></B> <FONT COLOR="#B8860B">REMOVE_REDUNDANT</FONT>
-    <B><FONT COLOR="#A020F0">if</FONT></B> (pts.size() &lt;= 2) <B><FONT COLOR="#A020F0">return</FONT></B>;
+    <B><FONT COLOR="#A020F0">if</FONT></B> (SZ(pts) &lt;= 2) <B><FONT COLOR="#A020F0">return</FONT></B>;
     dn.clear();
     dn.push_back(pts[0]);
     dn.push_back(pts[1]);
-    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 2; i &lt; pts.size(); i++){
-        <B><FONT COLOR="#A020F0">if</FONT></B> (between(dn[dn.size()-2], dn[dn.size()-1], pts[i])) dn.pop_back();
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 2; i &lt; SZ(pts); i++){
+        <B><FONT COLOR="#A020F0">if</FONT></B> (between(dn[SZ(dn)-2], dn[SZ(dn)-1], pts[i])) dn.pop_back();
 		dn.push_back(pts[i]);
     }
-    <B><FONT COLOR="#A020F0">if</FONT></B> (dn.size() &gt;= 3 &amp;&amp; between(dn.back(), dn[0], dn[1])) {
+    <B><FONT COLOR="#A020F0">if</FONT></B> (SZ(dn) &gt;= 3 &amp;&amp; between(dn.back(), dn[0], dn[1])) {
         dn[0] = dn.back();
         dn.pop_back();
     }
@@ -1873,6 +1873,26 @@ Point <B><FONT COLOR="#0000FF">RotateCCW</FONT></B>(Point p, <B><FONT COLOR="#22
     <B><FONT COLOR="#A020F0">return</FONT></B> ComputeLineIntersection(b, b+RotateCW90(a-b), c, c+RotateCW90(a-c));
 }
 
+<I><FONT COLOR="#B22222">// compute center of circle given 2 points and its radius
+</FONT></I><I><FONT COLOR="#B22222">// idea:
+</FONT></I><I><FONT COLOR="#B22222">//   1. Find the vector passing between a and b -&gt; (x2-x1, y2-y1)
+</FONT></I><I><FONT COLOR="#B22222">//   2. Find the mirror vector between a and b -&gt; (y2-y1, x1-x2)
+</FONT></I><I><FONT COLOR="#B22222">//   3. Normalize the mirror vector ((y2-y1)/d, (x1-x2)/d)
+</FONT></I><I><FONT COLOR="#B22222">//   4. Use the distance between the center and the midpoint and 3.
+</FONT></I><I><FONT COLOR="#B22222">//      to compute the center.
+</FONT></I><I><FONT COLOR="#B22222">// Returns two possible centers
+</FONT></I>vector&lt;Point&gt; ComputeCircleCenter(Point a, Point b, <B><FONT COLOR="#228B22">double</FONT></B> r) {
+    vector&lt;Point&gt; res;
+    Point mid = (a + b) / 2;
+    <B><FONT COLOR="#228B22">double</FONT></B> d = sqrt(dist2(a, b));
+    Point v_ab = b - a;
+    Point v1 = RotateCW90(v_ab) / d;
+    <B><FONT COLOR="#228B22">double</FONT></B> d2 = sqrt(r * r - (d / 2) * (d / 2));
+    res.push_back(mid + v1 * d2);
+    res.push_back(mid - v1 * d2);
+    <B><FONT COLOR="#A020F0">return</FONT></B> res;
+}
+
 <I><FONT COLOR="#B22222">// determine if point is in a possibly non-convex polygon (by William
 </FONT></I><I><FONT COLOR="#B22222">// Randolph Franklin); returns 1 for strictly interior points, 0 for
 </FONT></I><I><FONT COLOR="#B22222">// strictly exterior points, and 0 or 1 for the remaining points.
@@ -1882,8 +1902,8 @@ Point <B><FONT COLOR="#0000FF">RotateCCW</FONT></B>(Point p, <B><FONT COLOR="#22
 </FONT></I><I><FONT COLOR="#B22222">// tests for checking point on polygon boundary
 </FONT></I><B><FONT COLOR="#228B22">bool</FONT></B> <B><FONT COLOR="#0000FF">PointInPolygon</FONT></B>(<B><FONT COLOR="#228B22">const</FONT></B> vector&lt;Point&gt; &amp;p, Point q) {
     <B><FONT COLOR="#228B22">bool</FONT></B> c = 0;
-    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; p.size(); i++){
-        <B><FONT COLOR="#228B22">int</FONT></B> j = (i+1)%p.size();
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(p); i++){
+        <B><FONT COLOR="#228B22">int</FONT></B> j = (i+1)%SZ(p);
         <B><FONT COLOR="#A020F0">if</FONT></B> ((p[i].y &lt;= q.y &amp;&amp; q.y &lt; p[j].y || p[j].y &lt;= q.y &amp;&amp; q.y &lt; p[i].y) &amp;&amp;	
             q.x &lt; p[i].x + (p[j].x - p[i].x) * (q.y - p[i].y) / (p[j].y - p[i].y))
             c = !c;
@@ -1893,8 +1913,8 @@ Point <B><FONT COLOR="#0000FF">RotateCCW</FONT></B>(Point p, <B><FONT COLOR="#22
 
 <I><FONT COLOR="#B22222">// determine if point is on the boundary of a polygon
 </FONT></I><B><FONT COLOR="#228B22">bool</FONT></B> <B><FONT COLOR="#0000FF">PointOnPolygon</FONT></B>(<B><FONT COLOR="#228B22">const</FONT></B> vector&lt;Point&gt; &amp;p, Point q) {
-    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; p.size(); i++)
-        <B><FONT COLOR="#A020F0">if</FONT></B> (dist2(ProjectPointSegment(p[i], p[(i+1)%p.size()], q), q) &lt; EPS)
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(p); i++)
+        <B><FONT COLOR="#A020F0">if</FONT></B> (dist2(ProjectPointSegment(p[i], p[(i+1)%SZ(p)], q), q) &lt; EPS)
             <B><FONT COLOR="#A020F0">return</FONT></B> true;
     <B><FONT COLOR="#A020F0">return</FONT></B> false;
 }
@@ -1937,8 +1957,8 @@ Point <B><FONT COLOR="#0000FF">RotateCCW</FONT></B>(Point p, <B><FONT COLOR="#22
 </FONT></I><I><FONT COLOR="#B22222">// the &quot;center of gravity&quot; or &quot;center of mass&quot;.
 </FONT></I><B><FONT COLOR="#228B22">double</FONT></B> <B><FONT COLOR="#0000FF">ComputeSignedArea</FONT></B>(<B><FONT COLOR="#228B22">const</FONT></B> vector&lt;Point&gt; &amp;p) {
     <B><FONT COLOR="#228B22">double</FONT></B> area = 0;
-    <B><FONT COLOR="#A020F0">for</FONT></B>(<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; p.size(); i++) {
-        <B><FONT COLOR="#228B22">int</FONT></B> j = (i+1) % p.size();
+    <B><FONT COLOR="#A020F0">for</FONT></B>(<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(p); i++) {
+        <B><FONT COLOR="#228B22">int</FONT></B> j = (i+1) % SZ(p);
         area += p[i].x*p[j].y - p[j].x*p[i].y;
     }
     <B><FONT COLOR="#A020F0">return</FONT></B> area / 2.0;
@@ -1951,8 +1971,8 @@ Point <B><FONT COLOR="#0000FF">RotateCCW</FONT></B>(Point p, <B><FONT COLOR="#22
 Point <B><FONT COLOR="#0000FF">ComputeCentroid</FONT></B>(<B><FONT COLOR="#228B22">const</FONT></B> vector&lt;Point&gt; &amp;p) {
     Point c(0,0);
     <B><FONT COLOR="#228B22">double</FONT></B> scale = 6.0 * ComputeSignedArea(p);
-    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; p.size(); i++){
-        <B><FONT COLOR="#228B22">int</FONT></B> j = (i+1) % p.size();
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(p); i++){
+        <B><FONT COLOR="#228B22">int</FONT></B> j = (i+1) % SZ(p);
         c = c + (p[i]+p[j])*(p[i].x*p[j].y - p[j].x*p[i].y);
     }
     <B><FONT COLOR="#A020F0">return</FONT></B> c / scale;
@@ -1960,10 +1980,10 @@ Point <B><FONT COLOR="#0000FF">ComputeCentroid</FONT></B>(<B><FONT COLOR="#228B2
 
 <I><FONT COLOR="#B22222">// tests whether or not a given polygon (in CW or CCW order) is simple
 </FONT></I><B><FONT COLOR="#228B22">bool</FONT></B> <B><FONT COLOR="#0000FF">IsSimple</FONT></B>(<B><FONT COLOR="#228B22">const</FONT></B> vector&lt;Point&gt; &amp;p) {
-    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; p.size(); i++) {
-        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> k = i+1; k &lt; p.size(); k++) {
-            <B><FONT COLOR="#228B22">int</FONT></B> j = (i+1) % p.size();
-            <B><FONT COLOR="#228B22">int</FONT></B> l = (k+1) % p.size();
+    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(p); i++) {
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> k = i+1; k &lt; SZ(p); k++) {
+            <B><FONT COLOR="#228B22">int</FONT></B> j = (i+1) % SZ(p);
+            <B><FONT COLOR="#228B22">int</FONT></B> l = (k+1) % SZ(p);
             <B><FONT COLOR="#A020F0">if</FONT></B> (i == l || j == k) <B><FONT COLOR="#A020F0">continue</FONT></B>;
             <B><FONT COLOR="#A020F0">if</FONT></B> (SegmentsIntersect(p[i], p[j], p[k], p[l]))
                 <B><FONT COLOR="#A020F0">return</FONT></B> false;
@@ -2028,17 +2048,17 @@ Point <B><FONT COLOR="#0000FF">ComputeCentroid</FONT></B>(<B><FONT COLOR="#228B2
 </FONT></I>	<I><FONT COLOR="#B22222">// blank line
 </FONT></I>	<I><FONT COLOR="#B22222">// (4,5) (5,4)
 </FONT></I>	vector&lt;Point&gt; u = CircleLineIntersection(Point(0,6), Point(2,6), Point(1,1), 5);
-	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; u.size(); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
+	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(u); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
 	u = CircleLineIntersection(Point(0,9), Point(9,0), Point(1,1), 5);
-	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; u.size(); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
+	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(u); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
 	u = CircleCircleIntersection(Point(1,1), Point(10,10), 5, 5);
-	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; u.size(); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
+	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(u); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
 	u = CircleCircleIntersection(Point(1,1), Point(8,8), 5, 5);
-	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; u.size(); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
+	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(u); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
 	u = CircleCircleIntersection(Point(1,1), Point(4.5,4.5), 10, sqrt(2.0)/2.0);
-	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; u.size(); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
+	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(u); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
 	u = CircleCircleIntersection(Point(1,1), Point(4.5,4.5), 5, sqrt(2.0)/2.0);
-	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; u.size(); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
+	<B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; SZ(u); i++) cerr &lt;&lt; u[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>; cerr &lt;&lt; endl;
 	<I><FONT COLOR="#B22222">// area should be 5.0
 </FONT></I>	<I><FONT COLOR="#B22222">// centroid should be (1.1666666, 1.166666)
 </FONT></I>	Point pa[] = { Point(0,0), Point(5,0), Point(1,1), Point(0,5) };

@@ -1,3 +1,15 @@
+
+----------- Quick init.el setup --------
+
+;; line number
+(global-linum-mode t)
+
+;; 4 spaces indentation
+(setq basic-offset 4)
+(setq c-basic-offset 4)
+
+----------------------------------------
+
 C-x C-f         find-file
 C-x C-s         save-buffer
 C-x C-w         write-file
