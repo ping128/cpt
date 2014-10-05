@@ -184,9 +184,11 @@ vector<Point> ComputeCircleCenter(Point a, Point b, double r) {
     vector<Point> res;
     Point mid = (a + b) / 2;
     double d = sqrt(dist2(a, b));
+    double d_sq = dist2(a, b);
+    if (d_sq < EPS || d_sq > 4 * r * r - EPS) return res;
     Point v_ab = b - a;
     Point v1 = RotateCW90(v_ab) / d;
-    double d2 = sqrt(r * r - (d / 2) * (d / 2));
+    double d2 = sqrt(r*r - (d / 2) * (d / 2));
     res.push_back(mid + v1 * d2);
     res.push_back(mid - v1 * d2);
     return res;
