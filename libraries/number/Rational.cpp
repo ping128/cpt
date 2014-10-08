@@ -19,13 +19,13 @@ public:
     Rational() {}
     Rational(LL p_): p(p_), q(1) {}
     Rational(LL p_, LL q_): p(p_), q(q_) { reduce(); }
-    bool operator == (const Rational& rhs) const { return p == rhs.p && q == rhs.q; }
-    bool operator != (const Rational& rhs) const { return p != rhs.p || q != rhs.q; }
-    bool operator < (const Rational& rhs) const { return p * rhs.q < rhs.p * q; }
-    Rational operator + (Rational& rhs) const { return Rational(p * rhs.q + q * rhs.p, q * rhs.q); }
-    Rational operator - (Rational& rhs) const { return Rational(p * rhs.q - q * rhs.p, q * rhs.q); }
-    Rational operator * (Rational& rhs) const { return Rational(p * rhs.p, q * rhs.q); }
-    Rational operator / (Rational& rhs) const { return Rational(p * rhs.q, q * rhs.p); }
+    bool operator == (const Rational rhs) const { return p == rhs.p && q == rhs.q; }
+    bool operator != (const Rational rhs) const { return p != rhs.p || q != rhs.q; }
+    bool operator < (const Rational rhs) const { return p * rhs.q < rhs.p * q; }
+    Rational operator + (Rational rhs) const { return Rational(p * rhs.q + q * rhs.p, q * rhs.q); }
+    Rational operator - (Rational rhs) const { return Rational(p * rhs.q - q * rhs.p, q * rhs.q); }
+    Rational operator * (Rational rhs) const { return Rational(p * rhs.p, q * rhs.q); }
+    Rational operator / (Rational rhs) const { return Rational(p * rhs.q, q * rhs.p); }
     inline friend ostream& operator << (ostream &out, Rational m) { return out << m.p << "/" << m.q; }
 private:
     LL gcd(LL a, LL b) { if (b == 0) return a; return gcd(b, a % b); }
