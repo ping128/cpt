@@ -80,13 +80,12 @@ using namespace std;
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">x</FONT> first
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">y</FONT> second
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">SZ</FONT></B>(x) ((int)((x).size()))
-#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">PB</FONT></B>(x) push_back(x);
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">PB</FONT></B>(x) push_back(x)
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">INF</FONT> (0x3f3f3f3f)
-#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">MEMSET</FONT></B>(x,v) memset(x,v,sizeof(x));
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">MEMSET</FONT></B>(x,v) memset(x,v,sizeof(x))
 
 <B><FONT COLOR="#228B22">typedef</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B> LL;
 <B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;<B><FONT COLOR="#228B22">int</FONT></B>, <B><FONT COLOR="#228B22">int</FONT></B>&gt; PII; <B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;PII, <B><FONT COLOR="#228B22">int</FONT></B>&gt; PII2;
-<B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; VI; <B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;VI&gt; VVI;
 
 <B><FONT COLOR="#228B22">int</FONT></B> <B><FONT COLOR="#0000FF">main</FONT></B>() {
     
@@ -1885,9 +1884,11 @@ Point <B><FONT COLOR="#0000FF">RotateCCW</FONT></B>(Point p, <B><FONT COLOR="#22
     vector&lt;Point&gt; res;
     Point mid = (a + b) / 2;
     <B><FONT COLOR="#228B22">double</FONT></B> d = sqrt(dist2(a, b));
+    <B><FONT COLOR="#228B22">double</FONT></B> d_sq = dist2(a, b);
+    <B><FONT COLOR="#A020F0">if</FONT></B> (d_sq &lt; EPS || d_sq &gt; 4 * r * r - EPS) <B><FONT COLOR="#A020F0">return</FONT></B> res;
     Point v_ab = b - a;
     Point v1 = RotateCW90(v_ab) / d;
-    <B><FONT COLOR="#228B22">double</FONT></B> d2 = sqrt(r * r - (d / 2) * (d / 2));
+    <B><FONT COLOR="#228B22">double</FONT></B> d2 = sqrt(r*r - (d / 2) * (d / 2));
     res.push_back(mid + v1 * d2);
     res.push_back(mid - v1 * d2);
     <B><FONT COLOR="#A020F0">return</FONT></B> res;
@@ -4083,10 +4084,10 @@ using namespace std;
     <B><FONT COLOR="#228B22">bool</FONT></B> <B><FONT COLOR="#A020F0">operator</FONT></B> == (<B><FONT COLOR="#228B22">const</FONT></B> Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> p == rhs.p &amp;&amp; q == rhs.q; }
     <B><FONT COLOR="#228B22">bool</FONT></B> <B><FONT COLOR="#A020F0">operator</FONT></B> != (<B><FONT COLOR="#228B22">const</FONT></B> Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> p != rhs.p || q != rhs.q; }
     <B><FONT COLOR="#228B22">bool</FONT></B> <B><FONT COLOR="#A020F0">operator</FONT></B> &lt; (<B><FONT COLOR="#228B22">const</FONT></B> Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> p * rhs.q &lt; rhs.p * q; }
-    Rational <B><FONT COLOR="#A020F0">operator</FONT></B> + (Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> Rational(p * rhs.q + q * rhs.p, q * rhs.q); }
-    Rational <B><FONT COLOR="#A020F0">operator</FONT></B> - (Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> Rational(p * rhs.q - q * rhs.p, q * rhs.q); }
-    Rational <B><FONT COLOR="#A020F0">operator</FONT></B> * (Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> Rational(p * rhs.p, q * rhs.q); }
-    Rational <B><FONT COLOR="#A020F0">operator</FONT></B> / (Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> Rational(p * rhs.q, q * rhs.p); }
+    Rational <B><FONT COLOR="#A020F0">operator</FONT></B> + (<B><FONT COLOR="#228B22">const</FONT></B> Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> Rational(p * rhs.q + q * rhs.p, q * rhs.q); }
+    Rational <B><FONT COLOR="#A020F0">operator</FONT></B> - (<B><FONT COLOR="#228B22">const</FONT></B> Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> Rational(p * rhs.q - q * rhs.p, q * rhs.q); }
+    Rational <B><FONT COLOR="#A020F0">operator</FONT></B> * (<B><FONT COLOR="#228B22">const</FONT></B> Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> Rational(p * rhs.p, q * rhs.q); }
+    Rational <B><FONT COLOR="#A020F0">operator</FONT></B> / (<B><FONT COLOR="#228B22">const</FONT></B> Rational&amp; rhs) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> Rational(p * rhs.q, q * rhs.p); }
     <B><FONT COLOR="#228B22">inline</FONT></B> <B><FONT COLOR="#228B22">friend</FONT></B> ostream&amp; <B><FONT COLOR="#A020F0">operator</FONT></B> &lt;&lt; (ostream &amp;out, Rational m) { <B><FONT COLOR="#A020F0">return</FONT></B> out &lt;&lt; m.p &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot;/&quot;</FONT></B> &lt;&lt; m.q; }
 <B><FONT COLOR="#228B22">private</FONT></B>:
     LL gcd(LL a, LL b) { <B><FONT COLOR="#A020F0">if</FONT></B> (b == 0) <B><FONT COLOR="#A020F0">return</FONT></B> a; <B><FONT COLOR="#A020F0">return</FONT></B> gcd(b, a % b); }
