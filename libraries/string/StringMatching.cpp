@@ -103,7 +103,6 @@ int main(){
 vector<int> prefix_function (string s){
     int n = (int) s.length();
     vector<int> pi (n);
-    pi[0] = 1;
     for (int i=1; i<n; ++i){
         int j = pi[i-1];
         while (j > 0 && s[i] != s[j])
