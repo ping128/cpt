@@ -37,9 +37,6 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- '(custom-safe-themes
-   (quote
-    ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8b03a79bf4aa6f61e6ab2e8d0d74904c61eca17e35b5e25656d20b3be23c2b74" "2ab91cb47985c4923e10f6d8fa9d5d298e047feb36ba1c43c79cdb88cde9bb95" "484fffbe5ae378380c6a194278e0adc2d2c67310d6ced8de9c8b54f997567452" "c2cfe2f1440d9ef4bfd3ef4cf15bfe35ff40e6d431264b1e24af64f145cffb11" default)))
  '(inhibit-startup-screen t)
  '(show-paren-mode t)
  '(tool-bar-mode nil))
@@ -64,4 +61,5 @@
 
 ;; Theme
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'zenburn t)
+(load-theme 'whiteboard t)
+;(load-theme 'zenburn t)
