@@ -2,6 +2,7 @@
 //  Jumper
 //  Computes the jumper table
 //  Link: http://codeforces.com/contest/500/problem/E
+//        http://codeforces.com/contest/500/submission/9440685
 ////////////////////////////////////////////////////////////
 #include <bits/stdc++.h>
 
