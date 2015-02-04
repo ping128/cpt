@@ -13,7 +13,6 @@ public:
     Line() {}
     Line(LL a_, LL b_, LL c_) { init(a_, b_, c_); }
     Line(LL x1, LL y1, LL x2, LL y2) {
-        if(x1 > x2 || (x1 == x2 && y1 > y2)) swap(x1, x2), swap(y1, y2);
         LL A = y2 - y1, B = x1 - x2, C = -A * x1 - B * y1;
         init(A, B, C);
     }
@@ -27,8 +26,7 @@ public:
 private:
     void init(LL A, LL B, LL C){
         a = A, b = B, c = C;
-        if(a < 0) a = -a, b = -b, c = -c;
-        if(a == 0 && b < 0) b = -b, c = -c;
+        if(a < 0 || (a == 0 && b < 0)) a = -a, b = -b, c = -c;
         reduce();
     }
     void reduce(){
