@@ -8,11 +8,17 @@
 
 using namespace std;
 
+#define SZ(x) ((int)((x).size()))
+#define PB(x) push_back(x)
+#define MEMSET(x,v) memset(x,v,sizeof(x))
+#define REP(i,n) for(int (i)=0;(i)<(n);++(i))
+
+typedef long long LL;
+typedef pair<int, int> PII; typedef pair<PII, int> PII2;
+
 template<class T1, class T2>
 ostream& operator << (ostream &out, pair<T1, T2> pair) { return out << "(" << pair.first << ", " << pair.second << ")"; }
 
-typedef long long LL;
-typedef pair<int, int> PII;
 
 template<class T>
 class Treap {
@@ -28,7 +34,7 @@ public:
     Treapnode_ptr root;
     int tree_size;
     Treap() { root = NULL; srand(time(NULL)); tree_size = 0; }
-    void insert(T key) { insert(this->root, key); tree_size = root->subtree_size; }
+    void insert(T key) { root = insert(root, key); tree_size = root->subtree_size; }
     int size() { return tree_size; }
     T find_ksmallest(int k) {
         assert(k >= 1 && k <= this->root->subtree_size);
@@ -38,11 +44,11 @@ public:
         assert(k >= 1 && k <= this->root->subtree_size);
         return find_ksmallest_sum(this->root, k);
     }
-    void remove(T key) { remove(this->root, key); size = root->subtree_size; }
+    void remove(T key) { root = remove(root, key); tree_size = (root != NULL) ? root->subtree_size : 0; }
     void display() { display(this->root, 1); }
     bool find(T key) { return find(this->root, key); }
 private:
-    void insert(Treapnode_ptr &node, T key) {
+    Treapnode_ptr insert(Treapnode_ptr node, T key) {
         if (node == NULL) {
             node = new Treapnode();
             node->left = node->right = NULL;
@@ -52,27 +58,28 @@ private:
             if (node->key == key) {
                 // do nothing
             } else if (node->key > key) {
-                insert(node->left, key);
+                node->left = insert(node->left, key);
                 if (node->left->fix > node->fix)
                     rotate_right(node);
             } else {
-                insert(node->right, key);
+                node->right = insert(node->right, key);
                 if (node->right->fix > node->fix)
                     rotate_left(node);
             }
         }
         update_size(node);
         update_sum(node);
+        return node;
     }
-    
-    void remove(Treapnode_ptr &node, T key) {
+
+    Treapnode_ptr remove(Treapnode_ptr node, T key) {
         if (node) {
             if (key > node->key) {
-                remove(node->right, key);
+                node->right = remove(node->right, key);
                 update_size(node);
                 update_sum(node);
             } else if (key < node->key) {
-                remove(node->left, key);
+                node->left = remove(node->left, key);
                 update_size(node);
                 update_sum(node);
             } else {
@@ -80,28 +87,29 @@ private:
                     delete node;
                     node = NULL;
                 } else if (node->left == NULL) {
-                    Treapnode_ptr temp = node;
-                    node = node->right;
-                    delete temp;
+                    Treapnode_ptr temp = node->right;
+                    delete node;
+                    node = temp;
                 } else if (node->right == NULL) {
-                    Treapnode_ptr temp = node;
-                    node = node->left;
-                    delete temp;
+                    Treapnode_ptr temp = node->left;
+                    delete node;
+                    node = temp;
                 } else {
                     if (node->left->fix < node->right->fix) {
                         rotate_left(node);
-                        remove(node->left, key);
+                        node->left = remove(node->left, key);
                     } else {
                         rotate_right(node);
-                        remove(node->right, key);
+                        node->right = remove(node->right, key);
                     }
                     update_size(node);
                     update_sum(node);
                 }
             }
         }
+        return node;
     }
-    
+
     void rotate_left(Treapnode_ptr &node) {
         Treapnode_ptr temp;
         temp = node->right; node->right = temp->left;
@@ -121,7 +129,7 @@ private:
     void update_size(Treapnode_ptr node) {
         node->subtree_size = 1;
         if (node->left) node->subtree_size += node->left->subtree_size;
-        if (node->right) node->subtree_size += node->right->subtree_size;            
+        if (node->right) node->subtree_size += node->right->subtree_size;
     }
 
     void update_sum(Treapnode_ptr node) {
@@ -178,7 +186,7 @@ private:
         if (node) {
             display(node->right, level + 1);
             if (node == this->root)
-                cout << "Root->: ";
+                cout << "(Size: " << tree_size << " Root->: ";
             else
                 for (int i = 0; i < level; i++)
                     cout << "\t";
@@ -209,12 +217,12 @@ int main() {
     for (int i = 0; i <= 11; i++) cout << tree.find(PII(i, 0)) << endl;
 
     cout << endl;
-    
-    for (int i = 1; i <= 10; i++) 
+
+    for (int i = 1; i <= 10; i++)
         cout << tree.find_ksmallest(i) << endl;
 
     cout << endl;
-    for (int i = 1; i <= 10; i++) 
+    for (int i = 1; i <= 10; i++)
         cout << tree.find_ksmallest_sum(i) << endl;
     return 0;
 }
