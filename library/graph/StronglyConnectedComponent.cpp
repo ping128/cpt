@@ -15,13 +15,13 @@ public:
         int e, nxt;
         edge() {}
         edge(int _e, int _nxt) : e(_e), nxt(_nxt) {}
-    };  
+    };
     int V, E;
     vector<edge> e, er;
     vector<int> sp, spr, group_num, stk;
     int group_cnt; VVI graph; // reduced graph
     vector<bool> visited;
-    // Vertices are 1-indexed based.
+    // Vertices are 1-based indexed.
     StronglyConnectedComponent(int _V) {
         V = _V; E = 0; group_cnt = 0; group_num = vector<int>(V + 5);
         sp = vector<int>(V + 5); spr = vector<int>(V + 5); stk = vector<int>(V + 5);
