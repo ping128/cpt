@@ -7,7 +7,11 @@
 
 using namespace std;
 
-#define inf_cost (1000000000)
+#define SZ(x) ((int)((x).size()))
+
+typedef long long LL;
+
+const LL inf_cost = 1000000000000LL;
 template<class Flow_t, class Cost_t>
 class MinCostMaxFlow {
     typedef pair<Cost_t, int> PCI;
@@ -16,21 +20,22 @@ public:
         int to, rev;
         Flow_t capacity;
         Cost_t cost;
+        Edge (int t, int r, Flow_t cap, Cost_t c) : to(t), rev(r), capacity(cap), cost(c) {}
     };
     vector<vector<Edge> > edges;
     MinCostMaxFlow (int n) { // Vertices are 0-based indexed.
         edges.assign(n, vector<Edge>());
     }
     void add_edge (int from, int to, Flow_t cap, Cost_t cost) {
-        Edge f; f.to = to, f.rev = (int)edges[to].size(), f.capacity = cap, f.cost = cost;
-        Edge b; b.to = from, b.rev = (int)edges[from].size(), b.capacity = 0, b.cost = -cost;
+        Edge f = Edge(to, SZ(edges[to]), cap, cost);
+        Edge b = Edge(from, SZ(edges[from]), 0, -cost);
         edges[from].push_back(f), edges[to].push_back(b);
     }
     // Using SPFA (Shortest Path Faster Algor) for negative cost
     // Using Dijkstra for non-negative cost
     // f is the require amount of flow
     pair<Flow_t, Cost_t> get_min_cost_max_flow (int s, int t, Flow_t f = inf_cost, bool useSPFA = false) {
-        int n = edges.size();
+        int n = SZ(edges);
         vector<Cost_t> dist(n); vector<int> prev(n), prev_edge(n);
         pair<Flow_t, Cost_t> res = make_pair(0, 0);
         vector<Cost_t> potential(n);
@@ -42,7 +47,7 @@ public:
                 while (!Q.empty()) {
                     int u = Q.front(); Q.pop();
                     inqueue[u] = false;
-                    for (int i = 0; i < (int)edges[u].size(); i++) {
+                    for (int i = 0; i < SZ(edges[u]); i++) {
                         int v = edges[u][i].to;
                         if (edges[u][i].capacity > 0 && dist[u] + edges[u][i].cost < dist[v]) {
                             if (!inqueue[v]) {
@@ -53,7 +58,7 @@ public:
                             prev[v] = u; prev_edge[v] = i;
                         }
                     }
-                            
+
                 }
             } else {
                 priority_queue<PCI, vector<PCI>, greater<PCI> > Q;
@@ -62,7 +67,7 @@ public:
                     int u = Q.top().second; Q.pop();
                     if (visited[u]) continue;
                     visited[u] = true;
-                    for (int i = 0; i < (int)edges[u].size(); i++) {
+                    for (int i = 0; i < SZ(edges[u]); i++) {
                         int v = edges[u][i].to;
                         if (edges[u][i].capacity > 0) {
                             Cost_t d = dist[u] + edges[u][i].cost + potential[u] - potential[v];
