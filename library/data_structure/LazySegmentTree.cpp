@@ -29,33 +29,33 @@ public:
     Query_t query(int ll, int rr) { return value_to_result(query(1, ll, rr)); }
     void update(int ll, int rr, Update_t val) { update(1, ll, rr, val); }
 private:
-    // Initialize node's laziness
+    // Initialize node
     void initialize_node (int at) {
         tree[at].lazy = 0;
         tree[at].value = 0;
     }
 
-    // Node value to query's result
+    // Node's value to query's result
     Query_t value_to_result(Value_t val) {
         return val;
     }
 
-    // Return the node's value (considering the given node's value and laziness)
+    // Return node's value (considering the given node's value and lazy)
     Value_t node_to_value(int at) {
         return tree[at].value + (tree[at].right - tree[at].left + 1) * tree[at].lazy;
     }
 
-    // Update the node laziness
+    // Update node's lazy
     void update_lazy(int at, Update_t up_val) {
         tree[at].lazy += up_val;
     }
 
-    // Recalculate the parent's value without considering the parent's laziness
+    // Recalculate the parent's value without considering the parent's lazy
     void update_up(int at){
         tree[at].value = node_to_value(at * 2) + node_to_value(at * 2 + 1);
     }
 
-    // Update the childrens' laziness
+    // Update children's lazy
     void update_down(int at){
         if (tree[at].lazy == 0) return ; // no need to update
         tree[at * 2].lazy += tree[at].lazy;
@@ -82,7 +82,7 @@ private:
         initialize_node(at);
         if(ll == rr) tree[at].value = v[ll - 1];
         else {
-            int mid = (tree[at].left + tree[at].right) / 2;
+            int mid = (tree[at].left + tree[at].right) >> 1;
             init(at * 2, tree[at].left, mid, v);
             init(at * 2 + 1, mid + 1, tree[at].right, v);
             update_up(at);
