@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////
 //  Interval Set
-//  All intervals are [a, b).
+//  All intervals are [a, b)
+//  For Double type, use EPS to deal with precision error
 ////////////////////////////////////////////////////////////
 
 #include <iostream>
@@ -15,17 +16,18 @@ using namespace std;
 #define x first
 #define y second
 #define SZ(x) ((int)((x).size()))
-typedef pair<int, int> PII;
-typedef vector<PII> VP;
 
+template<class T>
 class IntervalSet {
 public:
-    set<PII> S;
+    typedef pair<T, T> Inter;
+
+    set<Inter> S;
     IntervalSet () {}
-    IntervalSet (VP &v) { for (auto e : v) { assert(e.x < e.y); S.insert(e); } }
-    PII get_intersection() {
+    IntervalSet (vector<Inter> &v) { for (auto e : v) { assert(e.x < e.y); S.insert(e); } }
+    Inter get_intersection() {
         assert(SZ(S) > 0);
-        PII ret = *S.begin();
+        Inter ret = *S.begin();
         for (auto e : S) { ret.x = max(ret.x, e.x); ret.y = min(ret.y, e.y); }
         return ret;
     }
@@ -35,22 +37,25 @@ public:
         return ret;
     }
     void union_intervals() {
-        VP events;
-        for (auto e : S) { events.push_back(PII(e.x, -1)); events.push_back(PII(e.y, 1)); }
+        if (SZ(S) == 0) return ;
+        vector<pair<T, int>> events;
+        for (auto e : S) { events.push_back(make_pair(e.x, -1)); events.push_back(make_pair(e.y, 1)); }
         S.clear();
         sort(events.begin(), events.end());
-        int open_interval = 1, last_open = events[0].x;
+        int open_interval = 1;
+        T last_open = events[0].x;
         for (int i = 1; i < SZ(events); i++) {
             if (!open_interval) last_open = events[i].x;
             open_interval -= events[i].y;
-            if (!open_interval) S.insert(PII(last_open, events[i].x));
+            if (!open_interval) S.insert(Inter(last_open, events[i].x));
         }
     }
-    void add(PII inter) {
-        assert(inter.x < inter.y);
+    void add(T a, T b) {
+        assert(a < b);
+        Inter inter = Inter(a, b);
         if (!S.empty()) {
-            auto it1 = S.lower_bound(PII(inter.x, inter.x));
-            if (it1 != S.begin()) {
+            auto it1 = S.lower_bound(Inter(inter.x, inter.x));
+             if (it1 != S.begin()) {
                 auto it2 = it1; it2--;
                 if (it2->y >= inter.x) { inter = union_overlap(inter, *it2); S.erase(it2); }
             }
@@ -63,28 +68,29 @@ public:
         S.insert(inter);
     }
     void print() {
-        printf("{"); for (auto e : S) printf(" (%d,%d)", e.x, e.y); printf(" }\n");
+        cout << "{"; for (auto e : S) cout << " (" << e.x << "," << e.y << ")"; cout << " }" << endl;
     }
 private:
-    PII union_overlap(PII a, PII b) { return PII(min(a.x, b.x), max(a.y, b.y)); }
+    Inter union_overlap(Inter a, Inter b) { return Inter(min(a.x, b.x), max(a.y, b.y)); }
 };
 
+typedef pair<int, int> PII;
 int main () {
-    IntervalSet myset;
-    myset.add(PII(1, 2)); myset.print();
-    
-    myset.add(PII(2, 5)); myset.print();
-    myset.add(PII(1, 2)); myset.print();
-    myset.add(PII(5, 6)); myset.print();
+    IntervalSet<int> myset;
+    myset.add(1, 2); myset.print();
 
-    myset.add(PII(10, 12)); myset.print();
-    myset.add(PII(7, 10)); myset.print();
-    myset.add(PII(0, 20)); myset.print();
-    myset.add(PII(20, 22)); myset.print();
+    myset.add(2, 5); myset.print();
+    myset.add(1, 2); myset.print();
+    myset.add(5, 6); myset.print();
+
+    myset.add(10, 12); myset.print();
+    myset.add(7, 10); myset.print();
+    myset.add(0, 20); myset.print();
+    myset.add(20, 22); myset.print();
     cout << myset.length() << endl;
 
     vector<PII> v{PII(1, 2), PII(3, 5), PII(5, 7), PII(12, 15), PII(10, 13), PII(5, 8)};
-    IntervalSet myset2 (v);
+    IntervalSet<int> myset2 (v);
     myset2.union_intervals();
     myset2.print();
     cout << myset2.length() << endl;
