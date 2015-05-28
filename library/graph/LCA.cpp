@@ -7,8 +7,11 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <stack>
 
 using namespace std;
+
+#define SZ(x) ((int)((x).size()))
 
 class LCA {
 public:
@@ -46,12 +49,23 @@ public:
     int get_depth(int u) { return depths[u]; }
 private:
     void build_lca(int at, int par, VVI &adj, int dep) {
-        int sz = adj[at].size();
-        depths[at] = dep;
+        stack<int> S;
         parents[0][at] = par;
-        for (int i = 1; i < max_lvl; i++) parents[i][at] = -1;
-        for (int i = 0; i < sz; i++) {
-            if (adj[at][i] != par) build_lca(adj[at][i], at, adj, dep + 1);
+        depths[at] = dep;
+        S.push(at);
+        vector<int> cnt(N, 0);
+        while (!S.empty()) {
+            int u = S.top(); S.pop();
+            while (cnt[u] < SZ(adj[u])) {
+                int v = adj[u][cnt[u]++];
+                if (v != parents[0][u]) {
+                    parents[0][v] = u;
+                    depths[v] = depths[u] + 1;
+                    S.push(v);
+                    if (cnt[u] < SZ(adj[u])) S.push(u);
+                    break;
+                }
+            }
         }
     }
 };
