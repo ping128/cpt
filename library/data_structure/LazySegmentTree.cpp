@@ -24,7 +24,7 @@ public:
     vector<TreeNode> tree;
     int N; // the number of data
     int tree_size; // the number of tree nodes
-    LazySegmentTree(int n) { vector<Value_t> v(n); build_tree(n, v); }
+    LazySegmentTree(int n) { vector<Value_t> v; build_tree(n, v); }
     LazySegmentTree(int n, vector<Value_t> &v) { build_tree(n, v); }
     Query_t query(int ll, int rr) { return value_to_result(query(1, ll, rr)); }
     void update(int ll, int rr, Update_t val) { update(1, ll, rr, val); }
@@ -80,7 +80,7 @@ private:
     void init(int at, int ll, int rr, vector<Value_t> &v) {
         tree[at].left = ll; tree[at].right = rr;
         initialize_node(at);
-        if(ll == rr) tree[at].value = v[ll - 1];
+        if (ll == rr) { if (!v.empty()) tree[at].value = v[ll - 1]; }
         else {
             int mid = (tree[at].left + tree[at].right) >> 1;
             init(at * 2, tree[at].left, mid, v);
