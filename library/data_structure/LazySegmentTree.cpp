@@ -90,27 +90,27 @@ private:
     }
 
     Value_t query(int at, int ll, int rr){
-        Value_t res = def_value();
-        if (rr < tree[at].left || ll > tree[at].right) return res;
-        if (ll <= tree[at].left && tree[at].right <= rr) {
+        if (ll == tree[at].left && tree[at].right == rr) {
             return node_to_value(at);
         } else {
+            Value_t res = def_value();
             update_down(at);
-            update_result(res, query(at * 2, ll, rr));
-            update_result(res, query(at * 2 + 1, ll, rr));
+            int mid = (tree[at].left + tree[at].right) >> 1;
+            if(ll <= mid) update_result(res, query(at * 2, ll, min(rr, mid)));
+            if(rr > mid) update_result(res, query(at * 2 + 1, max(mid + 1, ll), rr));
             update_up(at);
             return res;
         }
     }
 
     void update(int at, int ll, int rr, Update_t up_val){
-        if (rr < tree[at].left || ll > tree[at].right) return ;
-        if (ll <= tree[at].left && tree[at].right <= rr) {
+        if (ll == tree[at].left && tree[at].right == rr) {
             update_lazy(at, up_val);
         } else {
             update_down(at);
-            update(at * 2, ll, rr, up_val);
-            update(at * 2 + 1, ll, rr, up_val);
+            int mid = (tree[at].left + tree[at].right) >> 1;
+            if(ll <= mid) update(at * 2, ll, min(rr, mid), up_val);
+            if(rr > mid) update(at * 2 + 1, max(mid + 1, ll), rr, up_val);
             update_up(at);
         }
     }
