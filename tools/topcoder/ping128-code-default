@@ -21,9 +21,9 @@ typedef tuple<int, int, int> T3;
 
 class <%:class-name%> {
 public:
-    <%:return-type%> <%:method-name%>(<%:param-list%>) {
-        <%:set-caret%>
-    }
+	<%:return-type%> <%:method-name%>(<%:param-list%>) {
+		<%:set-caret%>
+	}
 };
 
 
