@@ -12,6 +12,17 @@ typedef vector<int> VI;
 typedef pair<int,int> PII;
 typedef long long LL;
 
+// Compute the totient of the numbers in [1, maxn)
+// phi(n) = n(1-1/p1)(1-1/p2)...(1-1/pi), pi | n
+void compute_totient(int maxn, int phi[]) {
+    for (int i = 1; i < maxn; i++) {
+        phi[i] += i;
+        for (int j = i * 2; j < maxn; j += i) {
+            phi[j] -= phi[i];
+        }
+    }
+}
+
 // Compute n choose m
 LL binomial(int n, int m) {
     if (n < m || n < 0 || m < 0) return 0;
