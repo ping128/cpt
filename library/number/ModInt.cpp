@@ -11,7 +11,7 @@ class ModInt {
 public:
     static const Int Mod = mod;
     Int x;
-    ModInt(): x(0) {}
+    ModInt() { x = 0; }
     ModInt(int a) { Int t = a % mod; if(t < 0) t += mod; x = t; }
     ModInt(long long a) { Int t = a % mod; if(t < 0) t += mod; x = t; }
     Int get() const { return x; }
