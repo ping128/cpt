@@ -61,15 +61,13 @@ private:
         assert(__builtin_popcount(N) == 1);
         Complex *in = new Complex[N];
         Complex *out = new Complex[N];
-        REP(i, SZ(a)) in[i] = a[i];
+        REP(i, N) in[i] = a[i];
         FFT(in, out, N, inverse ? 1 : -1);
-        vector<Complex> res;
-        REP(i, SZ(a)) res.PB(out[i]);
-        if (inverse) { REP(i, SZ(a)) res[i] = res[i] / N; }
+        vector<Complex> res(out, out + N);
+        if (inverse) { REP(i, N) res[i] = res[i] / N; }
         delete in; delete out;
         return res;
     }
-private:
     const double TWO_PI = 2 * acos(-1);
     void FFT(Complex *in, Complex *out, int N, int dir, int step = 1){
         if (N < 1) return;
