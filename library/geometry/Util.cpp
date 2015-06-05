@@ -66,7 +66,7 @@ Point RotateCCW(Point p, double t) { return Point(p.x*cos(t)-p.y*sin(t), p.x*sin
 #define REMOVE_REDUNDANT
 #ifdef REMOVE_REDUNDANT
 bool between(const Point &a, const Point &b, const Point &c) {
-    return (fabs(area2(a,b,c)) < EPS && (a.x-b.x)*(c.x-b.x) <= 0 && 
+    return (fabs(area2(a,b,c)) < EPS && (a.x-b.x)*(c.x-b.x) <= 0 &&
             (a.y-b.y)*(c.y-b.y) <= 0);
 }
 #endif
@@ -76,9 +76,9 @@ void ConvexHull(vector<Point> &pts) {
     pts.erase(unique(pts.begin(), pts.end()), pts.end());
     vector<Point> up, dn;
     for (int i = 0; i < SZ(pts); i++) {
-        while (SZ(up) > 1 && area2(up[SZ(up)-2], up.back(), pts[i]) >= 0) // concave down
+        while (SZ(up) > 1 && area2(up[SZ(up)-2], up.back(), pts[i]) >= 0) // up = concave down (top convex)
             up.pop_back();
-        while (SZ(dn) > 1 && area2(dn[SZ(dn)-2], dn.back(), pts[i]) <= 0) // concave up
+        while (SZ(dn) > 1 && area2(dn[SZ(dn)-2], dn.back(), pts[i]) <= 0) // dn = concave up (bot convex)
             dn.pop_back();
         up.push_back(pts[i]);
 		dn.push_back(pts[i]);
@@ -135,7 +135,7 @@ bool LinesParallel(Point a, Point b, Point c, Point d) {
 }
 
 bool LinesCollinear(Point a, Point b, Point c, Point d) {
-    return LinesParallel(a, b, c, d) && fabs(cross(a-b, a-c)) < EPS && 
+    return LinesParallel(a, b, c, d) && fabs(cross(a-b, a-c)) < EPS &&
         fabs(cross(c-d, c-a)) < EPS;
 }
 
@@ -143,8 +143,8 @@ bool LinesCollinear(Point a, Point b, Point c, Point d) {
 // line segment from c to d
 bool SegmentsIntersect(Point a, Point b, Point c, Point d) {
     if (LinesCollinear(a, b, c, d)) {
-        if (dist2(a, c) < EPS || dist2(a, d) < EPS || 
-            dist2(b, c) < EPS || dist2(b, d) < EPS) 
+        if (dist2(a, c) < EPS || dist2(a, d) < EPS ||
+            dist2(b, c) < EPS || dist2(b, d) < EPS)
             return true;
         if (dot(c-a, c-b) > 0 && dot(d-a, d-b) > 0 && dot(c-b, d-b) > 0)
             return false;
@@ -205,7 +205,7 @@ bool PointInPolygon(const vector<Point> &p, Point q) {
     bool c = 0;
     for (int i = 0; i < SZ(p); i++){
         int j = (i+1)%SZ(p);
-        if ((p[i].y <= q.y && q.y < p[j].y || p[j].y <= q.y && q.y < p[i].y) &&	
+        if ((p[i].y <= q.y && q.y < p[j].y || p[j].y <= q.y && q.y < p[i].y) &&
             q.x < p[i].x + (p[j].x - p[i].x) * (q.y - p[i].y) / (p[j].y - p[i].y))
             c = !c;
     }
