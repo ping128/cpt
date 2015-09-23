@@ -8,6 +8,7 @@
 
 using namespace std;
 
+
 class LazySegmentTree {
 public:
     typedef int Update_t;
@@ -29,10 +30,12 @@ public:
     Query_t query(int ll, int rr) { return value_to_result(query(1, ll, rr)); }
     void update(int ll, int rr, Update_t val) { update(1, ll, rr, val); }
 private:
+    Lazy_t DEF_LAZY = 0;
+    Value_t DEF_VALUE = 0;
     // Initialize node
     void initialize_node (int at) {
-        tree[at].lazy = 0;
-        tree[at].value = 0;
+        tree[at].lazy = DEF_LAZY;
+        tree[at].value = DEF_VALUE;
     }
 
     // Node's value to query's result
@@ -57,43 +60,22 @@ private:
 
     // Update children's lazy
     void update_down(int at){
-        if (tree[at].lazy == 0) return ; // no need to update
+        if (tree[at].lazy == DEF_LAZY) return ; // no need to update
         tree[at * 2].lazy += tree[at].lazy;
         tree[at * 2 + 1].lazy += tree[at].lazy;
-        tree[at].lazy = 0;
+        tree[at].lazy = DEF_LAZY;
     }
 
-    Value_t def_value() {
-        return 0;
-    }
     // Update the result
     void update_result(Value_t &res, Value_t q) {
         res += q;
-    }
-
-    void build_tree(int n, vector<Value_t> &v){
-        N = n; int base = 1; while (base < N) base *= 2; tree_size = base * 2;
-        tree = vector<TreeNode> (tree_size);
-        init(1, 1, n, v);
-    }
-
-    void init(int at, int ll, int rr, vector<Value_t> &v) {
-        tree[at].left = ll; tree[at].right = rr;
-        initialize_node(at);
-        if (ll == rr) { if (!v.empty()) tree[at].value = v[ll - 1]; }
-        else {
-            int mid = (tree[at].left + tree[at].right) >> 1;
-            init(at * 2, tree[at].left, mid, v);
-            init(at * 2 + 1, mid + 1, tree[at].right, v);
-            update_up(at);
-        }
     }
 
     Value_t query(int at, int ll, int rr){
         if (ll == tree[at].left && tree[at].right == rr) {
             return node_to_value(at);
         } else {
-            Value_t res = def_value();
+            Value_t res = DEF_VALUE;
             update_down(at);
             int mid = (tree[at].left + tree[at].right) >> 1;
             if(ll <= mid) update_result(res, query(at * 2, ll, min(rr, mid)));
@@ -111,6 +93,24 @@ private:
             int mid = (tree[at].left + tree[at].right) >> 1;
             if(ll <= mid) update(at * 2, ll, min(rr, mid), up_val);
             if(rr > mid) update(at * 2 + 1, max(mid + 1, ll), rr, up_val);
+            update_up(at);
+        }
+    }
+
+    void build_tree(int n, vector<Value_t> &v){
+        N = n; int base = 1; while (base < N) base *= 2; tree_size = base * 2;
+        tree = vector<TreeNode> (tree_size);
+        init(1, 1, n, v);
+    }
+
+    void init(int at, int ll, int rr, vector<Value_t> &v) {
+        tree[at].left = ll; tree[at].right = rr;
+        initialize_node(at);
+        if (ll == rr) { if (!v.empty()) tree[at].value = v[ll - 1]; }
+        else {
+            int mid = (tree[at].left + tree[at].right) >> 1;
+            init(at * 2, tree[at].left, mid, v);
+            init(at * 2 + 1, mid + 1, tree[at].right, v);
             update_up(at);
         }
     }
