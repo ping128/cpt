@@ -919,6 +919,7 @@ using namespace std;
 
 using namespace std;
 
+
 <B><FONT COLOR="#228B22">class</FONT></B> LazySegmentTree {
 <B><FONT COLOR="#228B22">public</FONT></B>:
     <B><FONT COLOR="#228B22">typedef</FONT></B> <B><FONT COLOR="#228B22">int</FONT></B> Update_t;
@@ -940,10 +941,12 @@ using namespace std;
     Query_t query(<B><FONT COLOR="#228B22">int</FONT></B> ll, <B><FONT COLOR="#228B22">int</FONT></B> rr) { <B><FONT COLOR="#A020F0">return</FONT></B> value_to_result(query(1, ll, rr)); }
     <B><FONT COLOR="#228B22">void</FONT></B> update(<B><FONT COLOR="#228B22">int</FONT></B> ll, <B><FONT COLOR="#228B22">int</FONT></B> rr, Update_t val) { update(1, ll, rr, val); }
 <B><FONT COLOR="#228B22">private</FONT></B>:
+    Lazy_t DEF_LAZY = 0;
+    Value_t DEF_VALUE = 0;
     <I><FONT COLOR="#B22222">// Initialize node
 </FONT></I>    <B><FONT COLOR="#228B22">void</FONT></B> initialize_node (<B><FONT COLOR="#228B22">int</FONT></B> at) {
-        tree[at].lazy = 0;
-        tree[at].value = 0;
+        tree[at].lazy = DEF_LAZY;
+        tree[at].value = DEF_VALUE;
     }
 
     <I><FONT COLOR="#B22222">// Node's value to query's result
@@ -968,43 +971,22 @@ using namespace std;
 
     <I><FONT COLOR="#B22222">// Update children's lazy
 </FONT></I>    <B><FONT COLOR="#228B22">void</FONT></B> update_down(<B><FONT COLOR="#228B22">int</FONT></B> at){
-        <B><FONT COLOR="#A020F0">if</FONT></B> (tree[at].lazy == 0) <B><FONT COLOR="#A020F0">return</FONT></B> ; <I><FONT COLOR="#B22222">// no need to update
+        <B><FONT COLOR="#A020F0">if</FONT></B> (tree[at].lazy == DEF_LAZY) <B><FONT COLOR="#A020F0">return</FONT></B> ; <I><FONT COLOR="#B22222">// no need to update
 </FONT></I>        tree[at * 2].lazy += tree[at].lazy;
         tree[at * 2 + 1].lazy += tree[at].lazy;
-        tree[at].lazy = 0;
+        tree[at].lazy = DEF_LAZY;
     }
 
-    Value_t def_value() {
-        <B><FONT COLOR="#A020F0">return</FONT></B> 0;
-    }
     <I><FONT COLOR="#B22222">// Update the result
 </FONT></I>    <B><FONT COLOR="#228B22">void</FONT></B> update_result(Value_t &amp;res, Value_t q) {
         res += q;
-    }
-
-    <B><FONT COLOR="#228B22">void</FONT></B> build_tree(<B><FONT COLOR="#228B22">int</FONT></B> n, vector&lt;Value_t&gt; &amp;v){
-        N = n; <B><FONT COLOR="#228B22">int</FONT></B> base = 1; <B><FONT COLOR="#A020F0">while</FONT></B> (base &lt; N) base *= 2; tree_size = base * 2;
-        tree = vector&lt;TreeNode&gt; (tree_size);
-        init(1, 1, n, v);
-    }
-
-    <B><FONT COLOR="#228B22">void</FONT></B> init(<B><FONT COLOR="#228B22">int</FONT></B> at, <B><FONT COLOR="#228B22">int</FONT></B> ll, <B><FONT COLOR="#228B22">int</FONT></B> rr, vector&lt;Value_t&gt; &amp;v) {
-        tree[at].left = ll; tree[at].right = rr;
-        initialize_node(at);
-        <B><FONT COLOR="#A020F0">if</FONT></B> (ll == rr) { <B><FONT COLOR="#A020F0">if</FONT></B> (!v.empty()) tree[at].value = v[ll - 1]; }
-        <B><FONT COLOR="#A020F0">else</FONT></B> {
-            <B><FONT COLOR="#228B22">int</FONT></B> mid = (tree[at].left + tree[at].right) &gt;&gt; 1;
-            init(at * 2, tree[at].left, mid, v);
-            init(at * 2 + 1, mid + 1, tree[at].right, v);
-            update_up(at);
-        }
     }
 
     Value_t query(<B><FONT COLOR="#228B22">int</FONT></B> at, <B><FONT COLOR="#228B22">int</FONT></B> ll, <B><FONT COLOR="#228B22">int</FONT></B> rr){
         <B><FONT COLOR="#A020F0">if</FONT></B> (ll == tree[at].left &amp;&amp; tree[at].right == rr) {
             <B><FONT COLOR="#A020F0">return</FONT></B> node_to_value(at);
         } <B><FONT COLOR="#A020F0">else</FONT></B> {
-            Value_t res = def_value();
+            Value_t res = DEF_VALUE;
             update_down(at);
             <B><FONT COLOR="#228B22">int</FONT></B> mid = (tree[at].left + tree[at].right) &gt;&gt; 1;
             <B><FONT COLOR="#A020F0">if</FONT></B>(ll &lt;= mid) update_result(res, query(at * 2, ll, min(rr, mid)));
@@ -1022,6 +1004,24 @@ using namespace std;
             <B><FONT COLOR="#228B22">int</FONT></B> mid = (tree[at].left + tree[at].right) &gt;&gt; 1;
             <B><FONT COLOR="#A020F0">if</FONT></B>(ll &lt;= mid) update(at * 2, ll, min(rr, mid), up_val);
             <B><FONT COLOR="#A020F0">if</FONT></B>(rr &gt; mid) update(at * 2 + 1, max(mid + 1, ll), rr, up_val);
+            update_up(at);
+        }
+    }
+
+    <B><FONT COLOR="#228B22">void</FONT></B> build_tree(<B><FONT COLOR="#228B22">int</FONT></B> n, vector&lt;Value_t&gt; &amp;v){
+        N = n; <B><FONT COLOR="#228B22">int</FONT></B> base = 1; <B><FONT COLOR="#A020F0">while</FONT></B> (base &lt; N) base *= 2; tree_size = base * 2;
+        tree = vector&lt;TreeNode&gt; (tree_size);
+        init(1, 1, n, v);
+    }
+
+    <B><FONT COLOR="#228B22">void</FONT></B> init(<B><FONT COLOR="#228B22">int</FONT></B> at, <B><FONT COLOR="#228B22">int</FONT></B> ll, <B><FONT COLOR="#228B22">int</FONT></B> rr, vector&lt;Value_t&gt; &amp;v) {
+        tree[at].left = ll; tree[at].right = rr;
+        initialize_node(at);
+        <B><FONT COLOR="#A020F0">if</FONT></B> (ll == rr) { <B><FONT COLOR="#A020F0">if</FONT></B> (!v.empty()) tree[at].value = v[ll - 1]; }
+        <B><FONT COLOR="#A020F0">else</FONT></B> {
+            <B><FONT COLOR="#228B22">int</FONT></B> mid = (tree[at].left + tree[at].right) &gt;&gt; 1;
+            init(at * 2, tree[at].left, mid, v);
+            init(at * 2 + 1, mid + 1, tree[at].right, v);
             update_up(at);
         }
     }
