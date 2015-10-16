@@ -17,27 +17,35 @@ class LCA {
 public:
     typedef vector<int> VI;
     typedef vector<VI> VVI;
+    typedef vector<VVI> VVVI;
     VI depths;
     VVI parents;
+    VVVI V;
     int N, root, max_lvl;
     // Vertices are 0-based indexed.
     LCA (int root_, VVI graph) {
         root = root_; N = graph.size(); depths.resize(N);
         max_lvl = 1; while ((1<<max_lvl) < N) max_lvl++;
+        V.resize(max_lvl, vector<vector<int>>(N));
         parents.resize(max_lvl, VI(N));
         build_lca(root, -1, graph, 0);
         for (int i = 1; i < max_lvl; i++)
             for (int j = 0; j < N; j++)
-                if (parents[i - 1][j] != -1)
+                if (parents[i - 1][j] != -1) {
                     parents[i][j] = parents[i - 1][parents[i - 1][j]];
+                }
     }
+    vector<int> res;
     int lca(int u, int v) {
         if (depths[u] < depths[v]) swap(u, v);
         int diff_dep = depths[u] - depths[v];
         for (int i = 0; i < max_lvl; i++)
-            if ((1<<i) & diff_dep)
+            if ((1<<i) & diff_dep) {
                 u = parents[i][u];
-        if (u == v) return u;
+            }
+        if (u == v) {
+            return u;
+        }
         for (int i = max_lvl - 1; i >= 0; i--) {
             if (parents[i][u] != parents[i][v]) {
                 u = parents[i][u];
@@ -49,26 +57,36 @@ public:
     int get_depth(int u) { return depths[u]; }
 private:
     void build_lca(int at, int par, VVI &adj, int dep) {
-        stack<int> S;
         parents[0][at] = par;
         depths[at] = dep;
-        S.push(at);
-        vector<int> cnt(N, 0);
-        while (!S.empty()) {
-            int u = S.top(); S.pop();
-            while (cnt[u] < SZ(adj[u])) {
-                int v = adj[u][cnt[u]++];
-                if (v != parents[0][u]) {
-                    parents[0][v] = u;
-                    depths[v] = depths[u] + 1;
-                    S.push(v);
-                    if (cnt[u] < SZ(adj[u])) S.push(u);
-                    break;
-                }
+        for (auto v : adj[at]) {
+            if (v != par) {
+                build_lca(v, at, adj, dep + 1);
             }
         }
     }
 };
+// Using a stack to build a tree (might be necessary)
+// void build_lca(int at, int par, VVI &adj, int dep) {
+//     stack<int> S;
+//     parents[0][at] = par;
+//     depths[at] = dep;
+//     S.push(at);
+//     vector<int> cnt(N, 0);
+//     while (!S.empty()) {
+//         int u = S.top(); S.pop();
+//         while (cnt[u] < SZ(adj[u])) {
+//             int v = adj[u][cnt[u]++];
+//             if (v != parents[0][u]) {
+//                 parents[0][v] = u;
+//                 depths[v] = depths[u] + 1;
+//                 S.push(v);
+//                 if (cnt[u] < SZ(adj[u])) S.push(u);
+//                 break;
+//             }
+//         }
+//     }
+// }
 
 typedef vector<int> VI;
 typedef vector<VI> VVI;
