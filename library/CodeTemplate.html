@@ -2888,27 +2888,35 @@ using namespace std;
 <B><FONT COLOR="#228B22">public</FONT></B>:
     <B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; VI;
     <B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;VI&gt; VVI;
+    <B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;VVI&gt; VVVI;
     VI depths;
     VVI parents;
+    VVVI V;
     <B><FONT COLOR="#228B22">int</FONT></B> N, root, max_lvl;
     <I><FONT COLOR="#B22222">// Vertices are 0-based indexed.
 </FONT></I>    LCA (<B><FONT COLOR="#228B22">int</FONT></B> root_, VVI graph) {
         root = root_; N = graph.size(); depths.resize(N);
         max_lvl = 1; <B><FONT COLOR="#A020F0">while</FONT></B> ((1&lt;&lt;max_lvl) &lt; N) max_lvl++;
+        V.resize(max_lvl, vector&lt;vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt;&gt;(N));
         parents.resize(max_lvl, VI(N));
         build_lca(root, -1, graph, 0);
         <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 1; i &lt; max_lvl; i++)
             <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> j = 0; j &lt; N; j++)
-                <B><FONT COLOR="#A020F0">if</FONT></B> (parents[i - 1][j] != -1)
+                <B><FONT COLOR="#A020F0">if</FONT></B> (parents[i - 1][j] != -1) {
                     parents[i][j] = parents[i - 1][parents[i - 1][j]];
+                }
     }
+    vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; res;
     <B><FONT COLOR="#228B22">int</FONT></B> lca(<B><FONT COLOR="#228B22">int</FONT></B> u, <B><FONT COLOR="#228B22">int</FONT></B> v) {
         <B><FONT COLOR="#A020F0">if</FONT></B> (depths[u] &lt; depths[v]) swap(u, v);
         <B><FONT COLOR="#228B22">int</FONT></B> diff_dep = depths[u] - depths[v];
         <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; max_lvl; i++)
-            <B><FONT COLOR="#A020F0">if</FONT></B> ((1&lt;&lt;i) &amp; diff_dep)
+            <B><FONT COLOR="#A020F0">if</FONT></B> ((1&lt;&lt;i) &amp; diff_dep) {
                 u = parents[i][u];
-        <B><FONT COLOR="#A020F0">if</FONT></B> (u == v) <B><FONT COLOR="#A020F0">return</FONT></B> u;
+            }
+        <B><FONT COLOR="#A020F0">if</FONT></B> (u == v) {
+            <B><FONT COLOR="#A020F0">return</FONT></B> u;
+        }
         <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = max_lvl - 1; i &gt;= 0; i--) {
             <B><FONT COLOR="#A020F0">if</FONT></B> (parents[i][u] != parents[i][v]) {
                 u = parents[i][u];
@@ -2920,27 +2928,37 @@ using namespace std;
     <B><FONT COLOR="#228B22">int</FONT></B> get_depth(<B><FONT COLOR="#228B22">int</FONT></B> u) { <B><FONT COLOR="#A020F0">return</FONT></B> depths[u]; }
 <B><FONT COLOR="#228B22">private</FONT></B>:
     <B><FONT COLOR="#228B22">void</FONT></B> build_lca(<B><FONT COLOR="#228B22">int</FONT></B> at, <B><FONT COLOR="#228B22">int</FONT></B> par, VVI &amp;adj, <B><FONT COLOR="#228B22">int</FONT></B> dep) {
-        stack&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; S;
         parents[0][at] = par;
         depths[at] = dep;
-        S.push(at);
-        vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; cnt(N, 0);
-        <B><FONT COLOR="#A020F0">while</FONT></B> (!S.empty()) {
-            <B><FONT COLOR="#228B22">int</FONT></B> u = S.top(); S.pop();
-            <B><FONT COLOR="#A020F0">while</FONT></B> (cnt[u] &lt; SZ(adj[u])) {
-                <B><FONT COLOR="#228B22">int</FONT></B> v = adj[u][cnt[u]++];
-                <B><FONT COLOR="#A020F0">if</FONT></B> (v != parents[0][u]) {
-                    parents[0][v] = u;
-                    depths[v] = depths[u] + 1;
-                    S.push(v);
-                    <B><FONT COLOR="#A020F0">if</FONT></B> (cnt[u] &lt; SZ(adj[u])) S.push(u);
-                    <B><FONT COLOR="#A020F0">break</FONT></B>;
-                }
+        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">auto</FONT></B> v : adj[at]) {
+            <B><FONT COLOR="#A020F0">if</FONT></B> (v != par) {
+                build_lca(v, at, adj, dep + 1);
             }
         }
     }
 };
-
+<I><FONT COLOR="#B22222">// Using a stack to build a tree (might be necessary)
+</FONT></I><I><FONT COLOR="#B22222">// void build_lca(int at, int par, VVI &amp;adj, int dep) {
+</FONT></I><I><FONT COLOR="#B22222">//     stack&lt;int&gt; S;
+</FONT></I><I><FONT COLOR="#B22222">//     parents[0][at] = par;
+</FONT></I><I><FONT COLOR="#B22222">//     depths[at] = dep;
+</FONT></I><I><FONT COLOR="#B22222">//     S.push(at);
+</FONT></I><I><FONT COLOR="#B22222">//     vector&lt;int&gt; cnt(N, 0);
+</FONT></I><I><FONT COLOR="#B22222">//     while (!S.empty()) {
+</FONT></I><I><FONT COLOR="#B22222">//         int u = S.top(); S.pop();
+</FONT></I><I><FONT COLOR="#B22222">//         while (cnt[u] &lt; SZ(adj[u])) {
+</FONT></I><I><FONT COLOR="#B22222">//             int v = adj[u][cnt[u]++];
+</FONT></I><I><FONT COLOR="#B22222">//             if (v != parents[0][u]) {
+</FONT></I><I><FONT COLOR="#B22222">//                 parents[0][v] = u;
+</FONT></I><I><FONT COLOR="#B22222">//                 depths[v] = depths[u] + 1;
+</FONT></I><I><FONT COLOR="#B22222">//                 S.push(v);
+</FONT></I><I><FONT COLOR="#B22222">//                 if (cnt[u] &lt; SZ(adj[u])) S.push(u);
+</FONT></I><I><FONT COLOR="#B22222">//                 break;
+</FONT></I><I><FONT COLOR="#B22222">//             }
+</FONT></I><I><FONT COLOR="#B22222">//         }
+</FONT></I><I><FONT COLOR="#B22222">//     }
+</FONT></I><I><FONT COLOR="#B22222">// }
+</FONT></I>
 <B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; VI;
 <B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;VI&gt; VVI;
 #<B><FONT COLOR="#5F9EA0">define</FONT></B> <FONT COLOR="#B8860B">MAXN</FONT> 1005
