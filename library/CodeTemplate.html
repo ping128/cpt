@@ -441,15 +441,15 @@ using namespace std;
 <B><FONT COLOR="#228B22">template</FONT></B>&lt;<B><FONT COLOR="#228B22">class</FONT></B> T&gt;
 <B><FONT COLOR="#228B22">class</FONT></B> RangeMinimumQuery {
 <B><FONT COLOR="#228B22">public</FONT></B>:
-    vector&lt;vector&lt;T&gt; &gt; M;
+    vector&lt;vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; &gt; M;
     vector&lt;T&gt; A;
     <B><FONT COLOR="#228B22">int</FONT></B> N;
     RangeMinimumQuery(T in[], <B><FONT COLOR="#228B22">int</FONT></B> n) {
         N = n;
-        M = vector&lt;vector&lt;T&gt; &gt;(N + 5);
+        M = vector&lt;vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; &gt;(N + 5);
         A = vector&lt;T&gt; (N + 5);
         <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N + 5; i++)
-            M[i] = vector&lt;T&gt; (25);
+            M[i] = vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; (25);
 
         <I><FONT COLOR="#B22222">//initialize M for the intervals with length 1
 </FONT></I>        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N; i++) {
@@ -466,7 +466,7 @@ using namespace std;
 
     <I><FONT COLOR="#B22222">// returns min(A[left...right])
 </FONT></I>    <I><FONT COLOR="#B22222">// also can be modified to return the index
-</FONT></I>    <B><FONT COLOR="#228B22">int</FONT></B> get_min(<B><FONT COLOR="#228B22">int</FONT></B> left, <B><FONT COLOR="#228B22">int</FONT></B> right) {
+</FONT></I>    T get_min(<B><FONT COLOR="#228B22">int</FONT></B> left, <B><FONT COLOR="#228B22">int</FONT></B> right) {
         <B><FONT COLOR="#228B22">int</FONT></B> num = right - left + 1;
         <B><FONT COLOR="#228B22">int</FONT></B> e = 1, k = 0;
         <B><FONT COLOR="#A020F0">while</FONT></B> (e * 2 &lt;= num) e *= 2, k++;

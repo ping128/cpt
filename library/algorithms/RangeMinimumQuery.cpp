@@ -12,15 +12,15 @@ using namespace std;
 template<class T>
 class RangeMinimumQuery {
 public:
-    vector<vector<T> > M;
+    vector<vector<int> > M;
     vector<T> A;
     int N;
     RangeMinimumQuery(T in[], int n) {
         N = n;
-        M = vector<vector<T> >(N + 5);
+        M = vector<vector<int> >(N + 5);
         A = vector<T> (N + 5);
         for (int i = 0; i < N + 5; i++)
-            M[i] = vector<T> (25);
+            M[i] = vector<int> (25);
 
         //initialize M for the intervals with length 1
         for (int i = 0; i < N; i++) {
@@ -37,7 +37,7 @@ public:
 
     // returns min(A[left...right])
     // also can be modified to return the index
-    int get_min(int left, int right) {
+    T get_min(int left, int right) {
         int num = right - left + 1;
         int e = 1, k = 0;
         while (e * 2 <= num) e *= 2, k++;
