@@ -107,7 +107,7 @@ public:
         splay(n, NULL);
     }
     int size() { return root ? root->sz : 0; }
-    void join(SplayTree<T> &tree, int k) {
+    void join(SplayTree<T> &tree) {
         if (root) {
             splayMax();
             root->right = tree.root;
@@ -124,7 +124,7 @@ public:
             SplayTree<T> rc(root->right);
             delete root;
             root = lc.root;
-            join(rc, k);
+            join(rc);
         }
     }
     bool contains(T k) {

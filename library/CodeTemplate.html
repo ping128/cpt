@@ -1263,7 +1263,7 @@ using namespace std;
         splay(n, NULL);
     }
     <B><FONT COLOR="#228B22">int</FONT></B> size() { <B><FONT COLOR="#A020F0">return</FONT></B> root ? root-&gt;sz : 0; }
-    <B><FONT COLOR="#228B22">void</FONT></B> join(SplayTree&lt;T&gt; &amp;tree, <B><FONT COLOR="#228B22">int</FONT></B> k) {
+    <B><FONT COLOR="#228B22">void</FONT></B> join(SplayTree&lt;T&gt; &amp;tree) {
         <B><FONT COLOR="#A020F0">if</FONT></B> (root) {
             splayMax();
             root-&gt;right = tree.root;
@@ -1280,7 +1280,7 @@ using namespace std;
             SplayTree&lt;T&gt; rc(root-&gt;right);
             <B><FONT COLOR="#A020F0">delete</FONT></B> root;
             root = lc.root;
-            join(rc, k);
+            join(rc);
         }
     }
     <B><FONT COLOR="#228B22">bool</FONT></B> contains(T k) {
