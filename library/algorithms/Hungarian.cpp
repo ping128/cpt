@@ -1,6 +1,8 @@
 ////////////////////////////////////////////////////////////
 //  Hungarian Algorithm
 //  Adopted from http://e-maxx.ru/algo/assignment_hungary
+//      -- Minimizing the cost of assign m tasks to n people
+//  O(n^2 m)
 ////////////////////////////////////////////////////////////
 #include <bits/stdc++.h>
 
