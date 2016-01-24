@@ -24,7 +24,7 @@ class Jumper {
 public:
     int N, H;
     vector<vector<int> > P;
-    Jumper (int n, int *parent) { // zero-indexed
+    Jumper (int n, int *parent) { // zero-based index
         N = n;
         H = log2(N) + 2;
         P.resize(N, vector<int>(H));
@@ -38,7 +38,7 @@ public:
                 if (P[i][h - 1] != -1) {
                     P[i][h] = P[P[i][h - 1]][h - 1];
                     // Note for a value updating
-                    // V[i][h] = V[i][h - 1] + V[P[i][h - 1]][h - 1]; 
+                    // V[i][h] = V[i][h - 1] + V[P[i][h - 1]][h - 1];
                 }
     }
 };
