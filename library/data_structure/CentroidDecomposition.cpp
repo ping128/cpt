@@ -45,7 +45,6 @@ private:
         }
         return center;
     }
-
     // Center node is the node whose all subtrees' size is not greater than half of the whole tree
     int find_center(int at) {
         cal_size(at, -1);
@@ -63,7 +62,6 @@ private:
         }
         return at;
     }
-
     void cal_size(int at, int par) {
         tree_size[at] = 1;
         for (int v : adj[at]) {

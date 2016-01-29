@@ -19,7 +19,6 @@ typedef pair<int, int> PII; typedef pair<PII, int> PII2;
 template<class T1, class T2>
 ostream& operator << (ostream &out, pair<T1, T2> pair) { return out << "(" << pair.first << ", " << pair.second << ")"; }
 
-
 template<class T>
 class Treap {
     typedef struct Treapnode {
