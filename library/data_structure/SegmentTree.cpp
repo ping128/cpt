@@ -30,41 +30,39 @@ private:
     void initialize_node (int at) {
         tree[at].value = DEF_VALUE;
     }
-    // Return the node's value
-    Value_t node_to_value(int at) {
-        return tree[at].value;
-    }
     // Recalculate the parent's value
     void update_up(int at){
-        tree[at].value = node_to_value(at * 2) + node_to_value(at * 2 + 1);
+        int left = at + at;
+        int right = at + at + 1;
+        tree[at].value = tree[left].value + tree[right].value;
     }
     // Update the result
     void update_result(Value_t &res, Value_t val) {
         res += val;
     }
     // Update leaf's value for internal update
-    void update_leaf_value(int at, Value_t val) {
+    void update_leaf_value(int at, Value_t &val) {
         tree[at].value += val;
     }
     Value_t query(int at, int ll, int rr){
         if (ll > tree[at].r || rr < tree[at].l) return DEF_VALUE;
         if (ll <= tree[at].l && tree[at].r <= rr) {
-            return node_to_value(at);
+            return tree[at].value;
         } else {
             Value_t res = DEF_VALUE;
-            update_result(res, query(at * 2, ll, rr));
-            update_result(res, query(at * 2 + 1, ll, rr));
+            update_result(res, query(at + at, ll, rr));
+            update_result(res, query(at + at + 1, ll, rr));
             return res;
         }
     }
-    void internal_update(int at, Value_t val) {
+    void internal_update(int at, Value_t &val) {
         at = leaves[at];
         update_leaf_value(at, val);
-        at /= 2;
-        while (at) { update_up(at); at /= 2; }
+        at >>= 1;
+        while (at) { update_up(at); at >>= 1; }
     }
     void build_tree(int n) {
-        N = n; int base = 1; while (base < N) base *= 2; tree_size = base * 2;
+        N = n; int base = 1; while (base < N) base <<= 1; tree_size = base << 1;
         leaves.resize(N + 1); tree = vector<TreeNode> (tree_size);
         init(1, 1, n);
     }
@@ -74,8 +72,8 @@ private:
         if(ll == rr) { leaves[ll] = at; }
         else {
             int mid = (tree[at].l + tree[at].r) >> 1;
-            init(at * 2, tree[at].l, mid);
-            init(at * 2 + 1, mid + 1, tree[at].r);
+            init(at + at, tree[at].l, mid);
+            init(at + at + 1, mid + 1, tree[at].r);
             update_up(at);
         }
     }
