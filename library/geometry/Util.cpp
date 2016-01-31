@@ -24,14 +24,14 @@ typedef double T;
 struct Point {
     T x, y;
     Point() {}
-    Point(T x_, T y_) : x(x_), y(y_) {}
+    Point(T x, T y) : x(x), y(y) {}
     Point(const Point &p) : x(p.x), y(p.y) {}
     Point operator + (const Point &p) const { return Point(x+p.x, y+p.y); }
     Point operator - (const Point &p) const { return Point(x-p.x, y-p.y); }
-    Point operator * (double c) const { return Point(x*c, y*c ); }
-    Point operator / (double c) const { return Point(x/c, y/c ); }
-    bool operator < (const Point &rhs) const { return make_pair(y,x) < make_pair(rhs.y,rhs.x); }
-    bool operator == (const Point &rhs) const { return make_pair(y,x) == make_pair(rhs.y,rhs.x); }
+    Point operator * (T c)            const { return Point(x*c,   y*c  ); }
+    Point operator / (T c)            const { return Point(x/c,   y/c  ); }
+    bool  operator < (const Point &p) const { return make_pair(y,x) < make_pair(p.y,p.x); }
+    bool  operator ==(const Point &p) const { return make_pair(y,x) == make_pair(p.y,p.x); }
 };
 
 T cross(Point p, Point q) { return p.x*q.y-p.y*q.x; }
