@@ -154,17 +154,20 @@ bool SegmentsIntersect(Point a, Point b, Point c, Point d) {
     if (cross(a-c, d-c) * cross(b-c, d-c) > 0) return false;
     return true;
 }
-
 // compute intersection of line passing through a and b
 // with line passing through c and d, assuming that unique
 // intersection exists; for segment intersection, check if
 // segments intersect first
+// if they are colinear, return only a point
 Point ComputeLineIntersection(Point a, Point b, Point c, Point d) {
     b=b-a; d=c-d; c=c-a;
     assert(dot(b, b) > EPS && dot(d, d) > EPS);
+    if (fabs(cross(b, d)) < EPS) { // colinear
+        if (min(c.x, d.x) <= b.x && b.x <= max(c.x, d.x)) return b;
+        else return a;
+    }
     return a + b*cross(c, d)/cross(b, d);
 }
-
 // compute center of circle given three points
 Point ComputeCircleCenter(Point a, Point b, Point c) {
     b=(a+b)/2;
