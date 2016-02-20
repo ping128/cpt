@@ -15,19 +15,15 @@ using namespace std;
 
 class LCA {
 public:
-    typedef vector<int> VI;
-    typedef vector<VI> VVI;
-    typedef vector<VVI> VVVI;
-    VI depths;
-    VVI parents;
-    VVVI V;
+    vector<int> depths;
+    vector<vector<int>> parents;
     int N, root, max_lvl;
     // Vertices are 0-based indexed.
-    LCA (int root_, VVI graph) {
+    LCA () {}
+    LCA (int root_, vector<vector<int>> &graph) {
         root = root_; N = graph.size(); depths.resize(N);
         max_lvl = 1; while ((1<<max_lvl) < N) max_lvl++;
-        V.resize(max_lvl, vector<vector<int>>(N));
-        parents.resize(max_lvl, VI(N));
+        parents.resize(max_lvl, vector<int>(N));
         build_lca(root, -1, graph, 0);
         for (int i = 1; i < max_lvl; i++)
             for (int j = 0; j < N; j++)
@@ -56,7 +52,7 @@ public:
     }
     int get_depth(int u) { return depths[u]; }
 private:
-    void build_lca(int at, int par, VVI &adj, int dep) {
+    void build_lca(int at, int par, vector<vector<int>> &adj, int dep) {
         parents[0][at] = par;
         depths[at] = dep;
         for (auto v : adj[at]) {
