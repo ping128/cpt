@@ -17,11 +17,8 @@ public:
     int N, M;
     Matrix() {}
     Matrix (int n, int m) {
-        N = n;
-        M = m;
-        a = vector<vector<T>>(N);
-        for (int i = 0; i < N; i++)
-            a[i] = vector<T>(M);
+        N = n; M = m;
+        a = vector<vector<T>>(N, vector<T>(M));
     }
     Matrix mult(const Matrix &o) {
         assert(M == o.N);

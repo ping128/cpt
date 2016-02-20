@@ -31,7 +31,6 @@ public:
                     parents[i][j] = parents[i - 1][parents[i - 1][j]];
                 }
     }
-    vector<int> res;
     int lca(int u, int v) {
         if (depths[u] < depths[v]) swap(u, v);
         int diff_dep = depths[u] - depths[v];
