@@ -9,14 +9,15 @@ using namespace std;
 class TrieNode {
 public:
     TrieNode *next[26];
+    // any other fields here
+    int val; // 0 W, 1 L
+    int val2;
     TrieNode () {
         for (int i = 0; i < 26; i++) {
             next[i] = NULL;
         }
+        val = val2 = 0;
     }
-    // any other fields here
-    int val; // 0 W, 1 L
-    int val2;
 };
 typedef TrieNode* TrieNodePtr;
 
