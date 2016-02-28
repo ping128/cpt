@@ -41,7 +41,7 @@ public:
         return ret;
     }
 };
-    
+
 void dfs(TrieNodePtr cur) {
     int sz = 0;
     int cnt_l = 0;

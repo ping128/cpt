@@ -17,8 +17,15 @@ typedef pair<int, int> P2;
 template<class A, class B> inline bool mina(A &x, B y) {return (x > y)?(x=y,1):0;}
 template<class A, class B> inline bool maxa(A &x, B y) {return (x < y)?(x=y,1):0;}
 
-int main() {
+
+class <%:class-name%> {
+public:
+	<%:return-type%> <%:method-name%>(<%:param-list%>) {
+		<%:set-caret%>
+	}
+};
 
 
-    return 0;
-}
+<%:testing-code%>
+//Powered by <%:kawigi-edit-version%>!
+
