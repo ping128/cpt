@@ -19,8 +19,9 @@ public:
         N = n;
         M = vector<vector<int> >(N + 5);
         A = vector<T> (N + 5);
+        int b; for (b = 0; 1<<b <= N; b++);
         for (int i = 0; i < N + 5; i++)
-            M[i] = vector<int> (25);
+            M[i] = vector<int> (b);
 
         //initialize M for the intervals with length 1
         for (int i = 0; i < N; i++) {

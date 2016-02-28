@@ -32,6 +32,7 @@ public:
         }
     }
     bool insert(TrieNodePtr &cur, char c) {
+        assert(c >= 'a' && c <= 'z');
         bool ret = false;
         if (cur->next[c - 'a'] == NULL) {
             ret = true;
