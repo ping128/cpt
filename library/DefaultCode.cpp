@@ -9,9 +9,7 @@ using namespace std;
 #define x first
 #define y second
 #define INF (0x3f3f3f3f)
-#ifndef PING128
-    #define cerr if(false) cout
-#endif
+
 typedef long long LL;
 typedef pair<int, int> P2;
 template<class A, class B> inline bool mina(A &x, B y) {return (x > y)?(x=y,1):0;}
