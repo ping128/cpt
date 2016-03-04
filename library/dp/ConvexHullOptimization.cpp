@@ -6,39 +6,35 @@
 //
 //  Requires b[j] >= b[j + 1] (lines are added in decreasing order of slopes
 //  Requires for this implementation: a[i] <= a[i + 1] (query x in increasing order)
-// 
+//
 //  Link: http://codeforces.com/contest/319/problem/C
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include <vector>
-#include <iostream>
+#include <bits/stdc++.h>
+#define SZ(x) ((int)(x).size())
 
 using namespace std;
 
-template<class T, int MAX_SIZE>
+template<class T>
 class ConvexHullOptimization {
 public:
-    typedef struct line_st {
-        T c, m;
-    } Line;
-    vector<Line> sk;
-    int front, rear;
-    ConvexHullOptimization () { front = rear = 0; sk.resize(MAX_SIZE); }
+    struct Line { T c, m; };
+    deque<Line> sk;
+    ConvexHullOptimization () {}
     void add_line(T m, T c) {
         Line new_line = {c, m};
-        if (front < rear && sk[rear - 1].m == new_line.m) {
-            sk[rear - 1].c = min(sk[rear - 1].c, new_line.c);
+        if (!sk.empty() && sk.back().m == new_line.m) {
+            sk.back().c = min(sk.back().c, new_line.c);
             return ;
         }
-        while (rear - front >= 2 && cross_left(sk[rear - 2], sk[rear - 1], new_line)) rear--;
-        sk[rear++] = new_line;
+        while (SZ(sk) >= 2 && cross_left(sk[SZ(sk) - 2], sk.back(), new_line)) sk.pop_back();
+        sk.push_back(new_line);
     }
     // Returns the minimum value of y
     T minimize(T x) {
-        if (front == rear) return 0;
-        while (rear - front >= 2 && cal_y(sk[front], x) > cal_y(sk[front + 1], x)) front++;
-        return cal_y(sk[front], x);
+        if (sk.empty()) return 0;
+        while (SZ(sk) >= 2 && cal_y(sk.front(), x) > cal_y(sk[1], x)) sk.pop_front();
+        return cal_y(sk.front(), x);
     }
 private:
     // Returns true if x_ab > x_bc
@@ -49,11 +45,9 @@ private:
         long double x_bc = (long double)(new_line.c - B.c) / (B.m - new_line.m);
         return x_ab > x_bc;
     }
-    T cal_y(Line A, T x) {
-        return A.m * x + A.c;
-    }
+    T cal_y(Line a, T x) { return a.m * x + a.c; }
 };
-                              
+
 #define MAXN (100005)
 typedef long long LL;
 int heights[MAXN];
@@ -65,11 +59,11 @@ int main(){
     scanf("%d", &n);
     for(int i = 1; i <= n; i++ ) scanf("%d", &heights[i]);
     for(int i = 1; i <= n; i++ ) scanf("%d", &costs[i]);
-    
+
     // dp[i] = min({dp[k] + costs[k] * heights[i]})
     // y = dp[i], c = dp[k], m = costs[k], x = heights[i]
     // costs is decreasing, heights is increasing
-    ConvexHullOptimization<LL, MAXN> solver;
+    ConvexHullOptimization<LL> solver;
     for (int i = 1; i <= n; i++ ) {
         dp[i] = solver.minimize(heights[i]);
         solver.add_line(costs[i], dp[i]);
