@@ -4,7 +4,7 @@
 //  dp[i] = min(dp[j] + b[j] * a[i]), j < i
 //  y     = min(c     + m    * x)
 //
-//  Requires b[j] >= b[j - 1] (lines are added in decreasing order of slopes
+//  Requires b[j] >= b[j + 1] (lines are added in decreasing order of slopes
 //  Requires for this implementation: a[i] <= a[i + 1] (query x in increasing order)
 // 
 //  Link: http://codeforces.com/contest/319/problem/C
