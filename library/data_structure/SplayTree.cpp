@@ -182,6 +182,7 @@ private:
     NPtr find(NPtr t, T k) {
         NPtr ret = NULL;
         while(t) {
+            t->push();
             if (k == t->key) return t;
             else if (k < t->key) t = t->left;
             else {
