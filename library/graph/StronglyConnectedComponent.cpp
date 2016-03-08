@@ -19,9 +19,10 @@ public:
     int V, E;
     vector<edge> e, er;
     vector<int> sp, spr, group_num, stk;
-    int group_cnt; VVI graph; // reduced graph
+    int group_cnt; vector<set<int>> graph; // reduced graph
     vector<bool> visited;
     // Vertices are 1-based indexed.
+    StronglyConnectedComponent() {}
     StronglyConnectedComponent(int _V) {
         V = _V; E = 0; group_cnt = 0; group_num = vector<int>(V + 5);
         sp = vector<int>(V + 5); spr = vector<int>(V + 5); stk = vector<int>(V + 5);
@@ -50,14 +51,12 @@ public:
         for(int i = stk[0]; i >= 1; i--) if (visited[stk[i]]) { group_cnt++; fill_backward(stk[i]); }
     }
     void cal_reduced_graph() { // need to call cal_scc() before
-        graph = VVI(group_cnt + 1);
+        graph = vector<set<int>>(group_cnt + 1);
         for (int i = 1; i <= V; i++) { int u = group_num[i];
             for (int j = sp[i]; j; j = e[j].nxt) {
                 int v = group_num[e[j].e];
-                if (u != v) graph[u].push_back(v);
+                if (u != v) graph[u].insert(v);
             }
-            sort(graph[u].begin(), graph[u].end());
-            graph[u].erase(unique(graph[u].begin(), graph[u].end()), graph[u].end());
         }
     }
 };
