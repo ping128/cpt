@@ -55,7 +55,8 @@ public:
         for (int i = 1; i <= V; i++) { int u = group_num[i];
             for (int j = sp[i]; j; j = e[j].nxt) {
                 int v = group_num[e[j].e];
-                if (u != v) graph[u].insert(v);
+                // If we don't need to remove duplicates, use Vector instead of Set.
+                if (u != v) graph[u].insert(v); 
             }
         }
     }
