@@ -5,15 +5,17 @@
 
 #include <bits/stdc++.h>
 
+
+const int ALPHABET = 26;
 using namespace std;
 class TrieNode {
 public:
-    TrieNode *next[26];
+    TrieNode *next[ALPHABET];
     // any other fields here
     int val; // 0 W, 1 L
     int val2;
     TrieNode () {
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < ALPHABET; i++) {
             next[i] = NULL;
         }
         val = val2 = 0;
@@ -47,7 +49,7 @@ void dfs(TrieNodePtr cur) {
     int sz = 0;
     int cnt_l = 0;
     int cnt_w = 0;
-    for (int i = 0; i < 26; i++) {
+    for (int i = 0; i < ALPHABET; i++) {
         if (cur->next[i] != NULL) {
             dfs(cur->next[i]);
             sz++;
