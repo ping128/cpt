@@ -40,7 +40,7 @@ vector<int> get_ZFunction(string s){
 ///////////////////////////////////////////////////////////////////////////////
 
 /* 
-  Searches for the string w in the string s (of length k). Returns the 
+  Searches for the string key in the string s (of length k). Returns the 
   0-based index of the first match (k if no match is found). Algorithm 
   runs in O(k) time. 
 */ 
@@ -52,27 +52,27 @@ typedef vector<int> VI;
 
 class KnuthMorrisPratt {
 public:
-    void build_table(string& w, VI& t){
-        int sz = w.size();
+    void build_table(string& key, VI& t){
+        int sz = key.size();
         t = VI(sz);
         int i = 2, j = 0;
         t[0] = -1; t[1] = 0;
         while (i < sz) {
-            if (w[i - 1] == w[j]) { t[i] = j + 1; i++; j++; }
+            if (key[i - 1] == key[j]) { t[i] = j + 1; i++; j++; }
             else if (j > 0) j = t[j];
             else { t[i] = 0; i++; }
         }
     }
 
-    // returh the index of the first match, or the length of s if w is not found
-    int KMP(string s, string w){
+    // return the index of the first match, or the length of s if key is not found
+    int KMP(string s, string key){
         int m = 0, i = 0;
         VI t;
-        build_table(w, t);
+        build_table(key, t);
         int sz_s = s.size();
-        int sz_w = w.size();
+        int sz_w = key.size();
         while (m+i < sz_s) {
-            if (w[i] == s[m+i]) {
+            if (key[i] == s[m+i]) {
                 i++;
                 if (i == sz_w) return m;
             } else {
