@@ -85,7 +85,7 @@ public:
     int ans;
     int cur_pos;
     int transition(int cur, char c) {
-        // Check is this word is a substring to the given text
+        // Check if this word is a substring to the given text
         if (nodes[cur].isWord) {
             int dd = cur_pos - depth(cur);
             if (ans == -1 || dd < ans) {
@@ -110,7 +110,7 @@ public:
         }
         return ret;
     }
-    // Find the first word in the tree that match the given string s
+    // Find the first word in the tree that matches the given string s
     int find(char *s) {
         ans = -1;
         int cur = 0;
