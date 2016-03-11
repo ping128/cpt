@@ -1,9 +1,3 @@
-/////////////////////////////////////////////////////////////////////////////////////////////
-//  Aho–Corasick algorithm
-//  Prefix tree with suffix link
-//
-//  Link: http://acm.timus.ru/problem.aspx?space=1&num=1269
-/////////////////////////////////////////////////////////////////////////////////////////////
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -85,14 +79,12 @@ public:
     int ans;
     int cur_pos;
     int transition(int cur, char c) {
-        // Check is this word is a substring to the given text
         if (nodes[cur].isWord) {
             int dd = cur_pos - depth(cur);
             if (ans == -1 || dd < ans) {
                 ans = dd;
             }
         }
-        ////////////////////////////////////////////////////
         REP(i, nodes[cur].num_child) {
             if (nodes[nodes[cur].children[i]].c == c) {
                 return nodes[cur].children[i];
@@ -110,25 +102,30 @@ public:
         }
         return ret;
     }
-    // Find the first word in the tree that match the given string s
+
     int find(char *s) {
         ans = -1;
         int cur = 0;
         int len = strlen(s);
         REP(i, len) {
+            int sf = find_suffix_link(cur);
             cur_pos = i;
             cur = transition(cur, s[i]);
-            // Check is this word is a substring to the given text
             if (nodes[cur].isWord) {
                 int dd = i - depth(cur) + 1;
                 if (ans == -1 || dd < ans) {
                     ans = dd;
                 }
             }
-            // Also check the other words with the same suffix.
-            find_suffix_link(cur);
         }
         return ans;
+    }
+
+    void dfs(int at) {
+        printf("%c\n", nodes[at].c);
+        REP(i, nodes[at].num_child) {
+            dfs(nodes[at].children[i]);
+        }
     }
 };
 
