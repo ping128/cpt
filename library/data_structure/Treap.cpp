@@ -13,11 +13,11 @@ using namespace std;
 #define MEMSET(x,v) memset(x,v,sizeof(x))
 #define REP(i,n) for(int (i)=0;(i)<(n);++(i))
 
+#define x first
+#define y second
+
 typedef long long LL;
 typedef pair<int, int> PII; typedef pair<PII, int> PII2;
-
-template<class T1, class T2>
-ostream& operator << (ostream &out, pair<T1, T2> pair) { return out << "(" << pair.first << ", " << pair.second << ")"; }
 
 template<class T>
 class Treap {
@@ -25,29 +25,28 @@ class Treap {
         T key; // (x = key, y = id) can differentiate the duplicate keys
         int fix;
         Treapnode *left, *right;
-        int subtree_size;
+        int sz;
         LL sum; // sum of all keys
-        Treapnode() { left = right = NULL; subtree_size = 0; sum = 0; }
-    } *Treapnode_ptr;
+        Treapnode() { left = right = NULL; sz = 0; sum = 0; }
+    } *NPtr;
 public:
-    Treapnode_ptr root;
-    int tree_size;
-    Treap() { root = NULL; srand(time(NULL)); tree_size = 0; }
-    void insert(T key) { root = insert(root, key); tree_size = root->subtree_size; }
-    int size() { return tree_size; }
+    NPtr root;
+    Treap() { root = NULL; srand(time(NULL)); }
+    void insert(T key) { root = insert(root, key); }
+    int size() { return size(root); }
+    int size(Treapnode node) { return (node == NULL) ? 0 : node->sz; }
     T find_ksmallest(int k) {
-        assert(k >= 1 && k <= this->root->subtree_size);
+        assert(k >= 1 && k <= this->root->sz);
         return find_ksmallest(this->root, k);
     }
     LL find_ksmallest_sum(int k) {
-        assert(k >= 1 && k <= this->root->subtree_size);
+        assert(k >= 1 && k <= this->root->sz);
         return find_ksmallest_sum(this->root, k);
     }
-    void remove(T key) { root = remove(root, key); tree_size = (root != NULL) ? root->subtree_size : 0; }
-    void display() { display(this->root, 1); }
+    void remove(T key) { root = remove(root, key); }
     bool find(T key) { return find(this->root, key); }
 private:
-    Treapnode_ptr insert(Treapnode_ptr node, T key) {
+    NPtr insert(NPtr node, T key) {
         if (node == NULL) {
             node = new Treapnode();
             node->left = node->right = NULL;
@@ -71,7 +70,7 @@ private:
         return node;
     }
 
-    Treapnode_ptr remove(Treapnode_ptr node, T key) {
+    NPtr remove(NPtr node, T key) {
         if (node) {
             if (key > node->key) {
                 node->right = remove(node->right, key);
@@ -86,11 +85,11 @@ private:
                     delete node;
                     node = NULL;
                 } else if (node->left == NULL) {
-                    Treapnode_ptr temp = node->right;
+                    NPtr temp = node->right;
                     delete node;
                     node = temp;
                 } else if (node->right == NULL) {
-                    Treapnode_ptr temp = node->left;
+                    NPtr temp = node->left;
                     delete node;
                     node = temp;
                 } else {
@@ -109,41 +108,41 @@ private:
         return node;
     }
 
-    void rotate_left(Treapnode_ptr &node) {
-        Treapnode_ptr temp;
+    void rotate_left(NPtr &node) {
+        NPtr temp;
         temp = node->right; node->right = temp->left;
         temp->left = node; node = temp;
         update_size(node->left); update_size(node);
         update_sum(node->left); update_sum(node);
     }
 
-    void rotate_right(Treapnode_ptr &node) {
-        Treapnode_ptr temp;
+    void rotate_right(NPtr &node) {
+        NPtr temp;
         temp = node->left; node->left = temp->right;
         temp->right = node; node = temp;
         update_size(node->right); update_size(node);
         update_sum(node->right); update_sum(node);
     }
 
-    void update_size(Treapnode_ptr node) {
-        node->subtree_size = 1;
-        if (node->left) node->subtree_size += node->left->subtree_size;
-        if (node->right) node->subtree_size += node->right->subtree_size;
+    void update_size(NPtr node) {
+        node->sz = 1;
+        if (node->left) node->sz += node->left->sz;
+        if (node->right) node->sz += node->right->sz;
     }
 
-    void update_sum(Treapnode_ptr node) {
-        node->sum = node->key.first;
+    void update_sum(NPtr node) {
+        node->sum = node->key.x;
         if (node->left) node->sum += node->left->sum;
         if (node->right) node->sum += node->right->sum;
     }
 
-    T find_ksmallest(Treapnode_ptr node, int k) {
+    T find_ksmallest(NPtr node, int k) {
         if (node->left == NULL) {
             if (k == 1)
                 return node->key;
             return find_ksmallest(node->right, k - 1);
         } else {
-            int num_left = node->left->subtree_size;
+            int num_left = node->left->sz;
             if (k <= num_left)
                 return find_ksmallest(node->left, k);
             else if (k == num_left + 1)
@@ -153,45 +152,33 @@ private:
         }
     }
 
-    LL find_ksmallest_sum(Treapnode_ptr node, int k) {
+    LL find_ksmallest_sum(NPtr node, int k) {
         LL res = 0;
         if (node && k) {
             if (node->left == NULL) {
-                if (k == node->subtree_size)
+                if (k == node->sz)
                     res = node->sum;
                 else
-                    res = node->key.first + find_ksmallest_sum(node->right, k - 1);
+                    res = node->key.x + find_ksmallest_sum(node->right, k - 1);
             } else {
-                int num_left = node->left->subtree_size;
+                int num_left = node->left->sz;
                 if (k <= num_left)
                     res = find_ksmallest_sum(node->left, k);
                 else if (k == num_left + 1)
-                    res = node->key.first + node->left->sum;
+                    res = node->key.x + node->left->sum;
                 else
-                    res = node->key.first + node->left->sum + find_ksmallest_sum(node->right, k - num_left - 1);
+                    res = node->key.x + node->left->sum + find_ksmallest_sum(node->right, k - num_left - 1);
             }
         }
         return res;
     }
-    bool find(Treapnode_ptr node, T key) {
+    bool find(NPtr node, T key) {
         if (node) {
             if (node->key == key) return true;
             else if (key < node->key) return find(node->left, key);
             else return find(node->right, key);
         }
         return false;
-    }
-    void display(Treapnode_ptr node, int level) {
-        if (node) {
-            display(node->right, level + 1);
-            if (node == this->root)
-                cout << "(Size: " << tree_size << " Root->: ";
-            else
-                for (int i = 0; i < level; i++)
-                    cout << "\t";
-            cout << "key: " << node->key << ", sz: " << node->subtree_size << endl;
-            display(node->left, level + 1);
-        }
     }
 };
 
@@ -211,15 +198,12 @@ int main() {
     tree.insert(PII(7, 0));
     tree.insert(PII(6, 0));
     tree.insert(PII(9, 0));
-    tree.display();
 
     for (int i = 0; i <= 11; i++) cout << tree.find(PII(i, 0)) << endl;
-
     cout << endl;
 
     for (int i = 1; i <= 10; i++)
-        cout << tree.find_ksmallest(i) << endl;
-
+        cout << tree.find_ksmallest(i).x << endl;
     cout << endl;
     for (int i = 1; i <= 10; i++)
         cout << tree.find_ksmallest_sum(i) << endl;
