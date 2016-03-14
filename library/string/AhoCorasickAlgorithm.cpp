@@ -29,12 +29,14 @@ public:
     int suffLink;
     int num_child;
     int *children;
+    int len = 0;
     Node () {
         parent = -1;
         isWord = false;
         suffLink = -1;
         num_child = 0;
         children = NULL;
+        len = -1;
     }
 };
 
@@ -72,6 +74,7 @@ public:
             cur = nxt;
         }
         nodes[cur].isWord = true;
+        nodes[cur].len = len;
     }
 
     int find_suffix_link(int cur) {
@@ -81,18 +84,7 @@ public:
         }
         return nodes[cur].suffLink;
     }
-
-    int ans;
-    int cur_pos;
     int transition(int cur, char c) {
-        // Check if this word is a substring to the given text
-        if (nodes[cur].isWord) {
-            int dd = cur_pos - depth(cur);
-            if (ans == -1 || dd < ans) {
-                ans = dd;
-            }
-        }
-        ////////////////////////////////////////////////////
         REP(i, nodes[cur].num_child) {
             if (nodes[nodes[cur].children[i]].c == c) {
                 return nodes[cur].children[i];
@@ -101,32 +93,24 @@ public:
         if (cur == 0) return 0;
         return transition(find_suffix_link(cur), c);
     }
-
-    int depth(int cur) {
-        int ret = 0;
-        while (cur != 0) {
-            ret++;
-            cur = nodes[cur].parent;
-        }
-        return ret;
-    }
     // Find the first word in the tree that matches the given string s
     int find(char *s) {
-        ans = -1;
+        int ans = -1;
         int cur = 0;
         int len = strlen(s);
         REP(i, len) {
-            cur_pos = i;
             cur = transition(cur, s[i]);
-            // Check is this word is a substring to the given text
-            if (nodes[cur].isWord) {
-                int dd = i - depth(cur) + 1;
-                if (ans == -1 || dd < ans) {
-                    ans = dd;
+            // Check if this word is a substring of the given text
+            int temp = cur;
+            while (temp && nodes[temp].suffLink == -1) {
+                if (nodes[temp].isWord) {
+                    int dd = i - nodes[temp].len + 1;
+                    if (ans == -1 || dd < ans) {
+                        ans = dd;
+                    }
                 }
+                temp = find_suffix_link(temp);
             }
-            // Also check the other words with the same suffix.
-            find_suffix_link(cur);
         }
         return ans;
     }
