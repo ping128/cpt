@@ -117,18 +117,21 @@ Point ProjectPointSegment(Point a, Point b, Point c) {
     if (r > 1) return b;
     return a + (b-a)*r;
 }
-
+// compute distance from c to line between a and b
+double DistancePointLine(Point a, Point b, Point c) {
+    Point ac = c - a;
+    Point ab = b - a;
+    return abs(cross(ac, ab) / sqrt(dot(ab, ab)));
+}
 // compute distance from c to segment between a and b
 double DistancePointSegment(Point a, Point b, Point c) {
     return sqrt(dist2(c, ProjectPointSegment(a, b, c)));
 }
-
 // compute distance between point (x,y,z) and plane ax+by+cz=d
 double DistancePointPlane(double x, double y, double z,
                           double a, double b, double c, double d){
     return fabs(a*x+b*y+c*z-d)/sqrt(a*a+b*b+c*c);
 }
-
 // determine if lines from a to b and c to d are parallel or collinear
 bool LinesParallel(Point a, Point b, Point c, Point d) {
     return fabs(cross(b-a, c-d)) < EPS;
