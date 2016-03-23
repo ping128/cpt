@@ -18,7 +18,7 @@ using namespace std;
 
 // -- Adapted from Stanford ACM team notebook --
 double INF = 1e100;
-double EPS = 1e-12;
+double EPS = 1e-9;
 
 typedef double T;
 struct Point {
