@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
-//  Aho–Corasick algorithm
+//  Aho-Corasick Algorithm
 //  Prefix tree with suffix link
 //
 //  Link: http://acm.timus.ru/problem.aspx?space=1&num=1269
