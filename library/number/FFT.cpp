@@ -49,7 +49,7 @@ public:
         REP(i, n) v[rev(r, i)] = f[i];
         REP(s, r) {
             int m = 1 << (s + 1);
-            double a = (inv ? 1 : -1) * TWO_PI / double(m);
+            double a = (inv ? 1 : -1) * TWO_PI / m;
             cpx b(cos(a), sin(a));
             for (int k = 0; k < n; k += m) {
                 cpx w(1, 0);
