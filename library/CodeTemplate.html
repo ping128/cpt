@@ -4517,7 +4517,7 @@ using namespace std;
     ModInt(<B><FONT COLOR="#228B22">int</FONT></B> a) { Int t = a % mod; <B><FONT COLOR="#A020F0">if</FONT></B>(t &lt; 0) t += mod; x = t; }
     ModInt(<B><FONT COLOR="#228B22">long</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B> a) { Int t = a % mod; <B><FONT COLOR="#A020F0">if</FONT></B>(t &lt; 0) t += mod; x = t; }
     Int get() <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> x; }
-    
+
     ModInt &amp;<B><FONT COLOR="#A020F0">operator</FONT></B> += (ModInt that) { <B><FONT COLOR="#A020F0">if</FONT></B>((x += that.x) &gt;= mod) x -= mod; <B><FONT COLOR="#A020F0">return</FONT></B> *<B><FONT COLOR="#A020F0">this</FONT></B>; }
     ModInt &amp;<B><FONT COLOR="#A020F0">operator</FONT></B> -= (ModInt that) { <B><FONT COLOR="#A020F0">if</FONT></B>((x += mod - that.x) &gt;= mod) x -= mod; <B><FONT COLOR="#A020F0">return</FONT></B> *<B><FONT COLOR="#A020F0">this</FONT></B>; }
     ModInt &amp;<B><FONT COLOR="#A020F0">operator</FONT></B> *= (ModInt that) { x = (<B><FONT COLOR="#228B22">long</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B>)(x) * that.x % mod; <B><FONT COLOR="#A020F0">return</FONT></B> *<B><FONT COLOR="#A020F0">this</FONT></B>; }
@@ -4527,10 +4527,11 @@ using namespace std;
     ModInt <B><FONT COLOR="#A020F0">operator</FONT></B> * (ModInt that) <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> ModInt(*<B><FONT COLOR="#A020F0">this</FONT></B>) *= that; }
     ModInt <B><FONT COLOR="#A020F0">operator</FONT></B> - () <B><FONT COLOR="#228B22">const</FONT></B> { <B><FONT COLOR="#A020F0">return</FONT></B> ModInt(-<B><FONT COLOR="#A020F0">this</FONT></B>-&gt;x); }
     <B><FONT COLOR="#228B22">inline</FONT></B> <B><FONT COLOR="#228B22">friend</FONT></B> ostream&amp; <B><FONT COLOR="#A020F0">operator</FONT></B> &lt;&lt; (ostream &amp;out, ModInt m) {<B><FONT COLOR="#A020F0">return</FONT></B> out &lt;&lt; m.x;}
-    
+
     ModInt power(<B><FONT COLOR="#228B22">long</FONT></B> <B><FONT COLOR="#228B22">long</FONT></B> k) <B><FONT COLOR="#228B22">const</FONT></B> {
         ModInt r(1); ModInt b = *<B><FONT COLOR="#A020F0">this</FONT></B>;
-        <B><FONT COLOR="#A020F0">if</FONT></B> (k &lt;= 0) <B><FONT COLOR="#A020F0">return</FONT></B> r; <B><FONT COLOR="#A020F0">while</FONT></B> (k) { <B><FONT COLOR="#A020F0">if</FONT></B> (k &amp; 1) r *= b; b *= b; k &gt;&gt;= 1; }
+        <B><FONT COLOR="#A020F0">if</FONT></B> (k &lt;= 0) <B><FONT COLOR="#A020F0">return</FONT></B> r;
+        <B><FONT COLOR="#A020F0">while</FONT></B> (k) { <B><FONT COLOR="#A020F0">if</FONT></B> (k &amp; 1) r *= b; b *= b; k &gt;&gt;= 1; }
         <B><FONT COLOR="#A020F0">return</FONT></B> r;
     }
     ModInt inverse() <B><FONT COLOR="#228B22">const</FONT></B> {
