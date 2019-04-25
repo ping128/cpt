@@ -32,7 +32,7 @@
   <LI><A HREF="#file23">geometry/Util.cpp</A>
   <LI><A HREF="#file24">graph/BiconnectedComponent.cpp</A>
   <LI><A HREF="#file25">graph/Dinic.cpp</A>
-  <LI><A HREF="#file26">graph/EulerCircuit.cpp</A>
+  <LI><A HREF="#file26">graph/EulerCircuitUndirectedGraph.cpp</A>
   <LI><A HREF="#file27">graph/EulerPathDirectedGraph.cpp</A>
   <LI><A HREF="#file28">graph/FordFulkerson.cpp</A>
   <LI><A HREF="#file29">graph/GlobalMinCut.cpp</A>
@@ -2888,7 +2888,7 @@ using namespace std;
 </PRE>
 <HR>
 <A NAME="file26">
-<H1>graph/EulerCircuit.cpp 26/47</H1>
+<H1>graph/EulerCircuitUndirectedGraph.cpp 26/47</H1>
 [<A HREF="#top">top</A>][<A HREF="#file25">prev</A>][<A HREF="#file27">next</A>]
 <PRE>
 <I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
@@ -2907,18 +2907,13 @@ using namespace std;
 </FONT></I><I><FONT COLOR="#B22222">//        remove edge(u, v) from the graph
 </FONT></I><I><FONT COLOR="#B22222">//        FindEuler(v)
 </FONT></I><I><FONT COLOR="#B22222">//      add vertex u in the result
-</FONT></I><I><FONT COLOR="#B22222">//  Link: http://www.spoj.com/KSTN/problems/EULER/
 </FONT></I><I><FONT COLOR="#B22222">///////////////////////////////////////////////////////////////////////////////
-</FONT></I>
-#<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;vector&gt;</FONT></B>
-#<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;algorithm&gt;</FONT></B>
-#<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;cassert&gt;</FONT></B>
-#<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;stack&gt;</FONT></B>
-#<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;iostream&gt;</FONT></B>
-
+</FONT></I>#<B><FONT COLOR="#5F9EA0">include</FONT></B> <B><FONT COLOR="#BC8F8F">&lt;bits/stdc++.h&gt;</FONT></B>
 using namespace std;
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">SZ</FONT></B>(x) ((int)(x).size())
+#<B><FONT COLOR="#5F9EA0">define</FONT></B> <B><FONT COLOR="#0000FF">REP</FONT></B>(i,n) for(int i=0;(i)&lt;(n);++(i))
 
-<B><FONT COLOR="#228B22">class</FONT></B> EulerCircuit {
+<B><FONT COLOR="#228B22">class</FONT></B> EulerCircuitUndirectedGraph {
 <B><FONT COLOR="#228B22">public</FONT></B>:
     <B><FONT COLOR="#228B22">typedef</FONT></B> vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; VI;
     <B><FONT COLOR="#228B22">typedef</FONT></B> pair&lt;<B><FONT COLOR="#228B22">int</FONT></B>, <B><FONT COLOR="#228B22">int</FONT></B>&gt; PII; <I><FONT COLOR="#B22222">// (v, id)
@@ -2932,10 +2927,10 @@ using namespace std;
     vector&lt;Edge&gt; edges;
     VI deg; <I><FONT COLOR="#B22222">// need to run get_euler_circuit first
 </FONT></I>    <I><FONT COLOR="#B22222">// Vertices are 0-based indexed.
-</FONT></I>    EulerCircuit() { N = 0; }
-    EulerCircuit(<B><FONT COLOR="#228B22">int</FONT></B> n) : N(n) {}
+</FONT></I>    EulerCircuitUndirectedGraph() { N = 0; }
+    EulerCircuitUndirectedGraph(<B><FONT COLOR="#228B22">int</FONT></B> n) : N(n) { deg = VI(N); }
     <I><FONT COLOR="#B22222">// Add an edge between u and v
-</FONT></I>    <B><FONT COLOR="#228B22">void</FONT></B> add_edge(<B><FONT COLOR="#228B22">int</FONT></B> u, <B><FONT COLOR="#228B22">int</FONT></B> v) { edges.push_back(Edge(u, v)); }
+</FONT></I>    <B><FONT COLOR="#228B22">void</FONT></B> add_edge(<B><FONT COLOR="#228B22">int</FONT></B> u, <B><FONT COLOR="#228B22">int</FONT></B> v) { edges.push_back(Edge(u, v)), deg[u]++, deg[v]++;}
     <I><FONT COLOR="#B22222">// Return an empty list if no an euler circuit
 </FONT></I>    VI get_euler_circuit(<B><FONT COLOR="#228B22">int</FONT></B> start) {
         <B><FONT COLOR="#A020F0">if</FONT></B> (N &lt; 1) <B><FONT COLOR="#A020F0">return</FONT></B> VI();
@@ -2947,12 +2942,6 @@ using namespace std;
         <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; M; i++) {
             adj[edges[i].u].push_back(PII(edges[i].v, i));
             adj[edges[i].v].push_back(PII(edges[i].u, i));
-        }
-        deg = VI (N);
-        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N; i++) { <B><FONT COLOR="#228B22">int</FONT></B> sz = adj[i].size();
-            <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> j = 0; j &lt; sz; j++) {
-                deg[adj[i][j].first]++;
-            }
         }
         <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N; i++) { <B><FONT COLOR="#A020F0">if</FONT></B> (deg[i] % 2) <B><FONT COLOR="#A020F0">return</FONT></B> empty_ret; }
         stack&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; st; VI cur_pt(N);
@@ -2977,94 +2966,62 @@ using namespace std;
 };
 
 <B><FONT COLOR="#228B22">int</FONT></B> <B><FONT COLOR="#0000FF">main</FONT></B>() {
-    <B><FONT COLOR="#228B22">int</FONT></B> N, M;
-    <B><FONT COLOR="#228B22">int</FONT></B> u, v;
-    scanf(<B><FONT COLOR="#BC8F8F">&quot;%d %d&quot;</FONT></B>, &amp;N, &amp;M);
-    EulerCircuit solver(N);
-    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; M; i++) {
-        scanf(<B><FONT COLOR="#BC8F8F">&quot;%d %d&quot;</FONT></B>, &amp;u, &amp;v);
-        u--, v--;
-        solver.add_edge(u, v);
+    <B><FONT COLOR="#228B22">int</FONT></B> N = 3;
+    {
+        EulerCircuitUndirectedGraph euler(N);
+        euler.add_edge(0, 1);
+        euler.add_edge(1, 2);
+        euler.add_edge(2, 0);
+        assert(SZ(euler.get_euler_circuit(0)) == 4);
     }
-    vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; res = solver.get_euler_circuit(0);
-    <B><FONT COLOR="#228B22">int</FONT></B> sz = res.size();
+    EulerCircuitUndirectedGraph euler(N);
+    euler.add_edge(0, 1);
+    euler.add_edge(1, 2);
 
-    <B><FONT COLOR="#A020F0">if</FONT></B> (sz) {
-        <I><FONT COLOR="#B22222">// Print an euler curcuit
-</FONT></I>        printf(<B><FONT COLOR="#BC8F8F">&quot;1&quot;</FONT></B>);
-        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 1; i &lt; sz; i++) {
-            printf(<B><FONT COLOR="#BC8F8F">&quot; %d&quot;</FONT></B>, res[i] + 1);
-        }
-        printf(<B><FONT COLOR="#BC8F8F">&quot;\n&quot;</FONT></B>);
-    } <B><FONT COLOR="#A020F0">else</FONT></B> {
-        <B><FONT COLOR="#228B22">bool</FONT></B> bad = false;
-        u = -1, v = -1;
-        <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; N; i++) {
-            <B><FONT COLOR="#A020F0">if</FONT></B> (solver.deg[i] % 2) {
-                <B><FONT COLOR="#A020F0">if</FONT></B> (u == -1) u = i;
-                <B><FONT COLOR="#A020F0">else</FONT></B> <B><FONT COLOR="#A020F0">if</FONT></B> (v == -1) v = i;
-                <B><FONT COLOR="#A020F0">else</FONT></B> bad = true; <I><FONT COLOR="#B22222">// No euler path as well.
-</FONT></I>            }
-        }
-
-        <B><FONT COLOR="#A020F0">if</FONT></B> (bad) {
-            <I><FONT COLOR="#B22222">// Neither euler path nor euler curcuit exists.
-</FONT></I>        } <B><FONT COLOR="#A020F0">else</FONT></B> {
-            <I><FONT COLOR="#B22222">// Print euler path.
-</FONT></I>            solver.add_edge(u, v);
-            res = solver.get_euler_circuit(0);
-            sz = res.size();
-            sz--;
-            <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> i = 0; i &lt; sz; i++) {
-                <B><FONT COLOR="#228B22">int</FONT></B> a = res[i];
-                <B><FONT COLOR="#228B22">int</FONT></B> b = res[(i + 1) % sz];
-                <B><FONT COLOR="#A020F0">if</FONT></B> ((a == u &amp;&amp; b == v) || (a == v &amp;&amp; b == u)) {
-                    printf(<B><FONT COLOR="#BC8F8F">&quot;%d&quot;</FONT></B>, b + 1);
-                    <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> j = 0; j &lt; sz - 1; j++) {
-                        printf(<B><FONT COLOR="#BC8F8F">&quot; %d&quot;</FONT></B>, res[(i + j + 2) % sz] + 1);
-                    }
-                    printf(<B><FONT COLOR="#BC8F8F">&quot;\n&quot;</FONT></B>);
-                    <B><FONT COLOR="#A020F0">break</FONT></B>;
-                }
+    <B><FONT COLOR="#228B22">int</FONT></B> start = -1;
+    <B><FONT COLOR="#228B22">int</FONT></B> end = -1;
+    REP(i, N) {
+        <B><FONT COLOR="#A020F0">if</FONT></B> (euler.deg[i] % 2 == 1) {
+            <B><FONT COLOR="#A020F0">if</FONT></B> (start == -1) {
+                start = i;
+            } <B><FONT COLOR="#A020F0">else</FONT></B> <B><FONT COLOR="#A020F0">if</FONT></B> (end == -1) {
+                end = i;
+            } <B><FONT COLOR="#A020F0">else</FONT></B> {
+                cout &lt;&lt; -1 &lt;&lt; endl;
+                <B><FONT COLOR="#A020F0">return</FONT></B> 0;
             }
         }
     }
+    vector&lt;<B><FONT COLOR="#228B22">int</FONT></B>&gt; circuit;
+    <B><FONT COLOR="#A020F0">if</FONT></B> (start != -1) {
+        <I><FONT COLOR="#B22222">// Case 1: euler path
+</FONT></I>        euler.add_edge(start, end);
+        circuit = euler.get_euler_circuit(start);
+    } <B><FONT COLOR="#A020F0">else</FONT></B> {
+        <I><FONT COLOR="#B22222">// Case 2: euler circuit
+</FONT></I>        circuit = euler.get_euler_circuit(0);
+    }
+    <B><FONT COLOR="#A020F0">if</FONT></B> (start != -1) {
+        <I><FONT COLOR="#B22222">// Print euler path
+</FONT></I>        circuit.pop_back();
+        REP(i, SZ(circuit)) {
+            <B><FONT COLOR="#228B22">int</FONT></B> a = circuit[i];
+            <B><FONT COLOR="#228B22">int</FONT></B> b = circuit[(i + 1) % SZ(circuit)];
+            <B><FONT COLOR="#A020F0">if</FONT></B> ((a == start &amp;&amp; b == end) || (a == end &amp;&amp; b == start)) {
+                REP(j, SZ(circuit)) {
+                    cout &lt;&lt; circuit[(i + j + 1) % SZ(circuit)] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>;
+                }
+                <B><FONT COLOR="#A020F0">break</FONT></B>;
+            }
+        }
+    } <B><FONT COLOR="#A020F0">else</FONT></B> {
+        REP(i, SZ(circuit)) {
+            cout &lt;&lt; circuit[i] &lt;&lt; <B><FONT COLOR="#BC8F8F">&quot; &quot;</FONT></B>;
+        }
+    }
+    cout &lt;&lt; endl;
     <B><FONT COLOR="#A020F0">return</FONT></B> 0;
 }
-
-<I><FONT COLOR="#B22222">/* tests
-int main() {
-    EulerCircuit solver;
-    assert(solver.get_euler_circuit(0).size() == 0);
-    solver = EulerCircuit(2);
-    solver.add_edge(0, 1);
-    assert(solver.get_euler_circuit(0).size() == 0);
-    solver = EulerCircuit(1);
-    assert(solver.get_euler_circuit(0).size() == 1);
-    solver.add_edge(0, 0);
-    solver.add_edge(0, 0);
-    vector&lt;int&gt; res = solver.get_euler_circuit(0);
-    assert(res.size() &gt; 0);
-    for (int i = 0; i &lt; (int)res.size(); i++) printf(&quot;%d &quot;, res[i]); printf(&quot;\n&quot;);
-    solver = EulerCircuit(6);
-    solver.add_edge(0, 1);
-    solver.add_edge(0, 2);
-    solver.add_edge(2, 1);
-    solver.add_edge(0, 3);
-    solver.add_edge(3, 4);
-    solver.add_edge(4, 5);
-    solver.add_edge(5, 3);
-    assert(solver.get_euler_circuit(0).size() == 0);
-    solver.add_edge(0, 3);
-    res = solver.get_euler_circuit(0);
-    assert(res.size() &gt; 0);
-    for (int i = 0; i &lt; (int)res.size(); i++) printf(&quot;%d &quot;, res[i]); printf(&quot;\n&quot;);
-    res = solver.get_euler_circuit(1);
-    assert(res.size() &gt; 0);
-    for (int i = 0; i &lt; (int)res.size(); i++) printf(&quot;%d &quot;, res[i]); printf(&quot;\n&quot;);
-    return 0;
-}
-*/</FONT></I>
 </PRE>
 <HR>
 <A NAME="file27">
@@ -4076,7 +4033,7 @@ using namespace std;
         REP(i, n) v[rev(r, i)] = f[i];
         REP(s, r) {
             <B><FONT COLOR="#228B22">int</FONT></B> m = 1 &lt;&lt; (s + 1);
-            <B><FONT COLOR="#228B22">double</FONT></B> a = (inv ? 1 : -1) * TWO_PI / <B><FONT COLOR="#228B22">double</FONT></B>(m);
+            <B><FONT COLOR="#228B22">double</FONT></B> a = (inv ? 1 : -1) * TWO_PI / m;
             cpx b(cos(a), sin(a));
             <B><FONT COLOR="#A020F0">for</FONT></B> (<B><FONT COLOR="#228B22">int</FONT></B> k = 0; k &lt; n; k += m) {
                 cpx w(1, 0);
