@@ -9,11 +9,10 @@
 
 using namespace std;
 
-template<class Value_t>
 class SegmentTree {
 public:
     typedef struct segment_st {
-        Value_t value;
+        int value;
         int l, r;
     } TreeNode;
 
@@ -22,13 +21,12 @@ public:
     int tree_size; // the number of tree nodes
     vector<int> leaves; // leaves' indices
     SegmentTree(int n) { build_tree(n); }
-    Value_t query(int ll, int rr) { return query(1, ll, rr); }
-    void update(int at, Value_t val) { internal_update(at, val); }
+    int query(int ll, int rr) { return query(1, ll, rr); }
+    void update(int at, int val) { internal_update(at, val); }
 private:
-    Value_t DEF_VALUE = 0;
     // Initialize node
     void initialize_node (int at) {
-        tree[at].value = DEF_VALUE;
+        tree[at].value = 0;
     }
     // Recalculate the parent's value
     void update_up(int at){
@@ -37,25 +35,25 @@ private:
         tree[at].value = tree[left].value + tree[right].value;
     }
     // Update the result
-    void update_result(Value_t &res, Value_t val) {
+    void update_result(int &res, int val) {
         res += val;
     }
     // Update leaf's value for internal update
-    void update_leaf_value(int at, Value_t &val) {
+    void update_leaf_value(int at, int &val) {
         tree[at].value += val;
     }
-    Value_t query(int at, int ll, int rr){
-        if (ll > tree[at].r || rr < tree[at].l) return DEF_VALUE;
+    int query(int at, int ll, int rr){
+        if (ll > tree[at].r || rr < tree[at].l) return 0;
         if (ll <= tree[at].l && tree[at].r <= rr) {
             return tree[at].value;
         } else {
-            Value_t res = DEF_VALUE;
+            int res = 0;
             update_result(res, query(at + at, ll, rr));
             update_result(res, query(at + at + 1, ll, rr));
             return res;
         }
     }
-    void internal_update(int at, Value_t &val) {
+    void internal_update(int at, int &val) {
         at = leaves[at];
         update_leaf_value(at, val);
         at >>= 1;
@@ -81,7 +79,7 @@ private:
 
 int main(){
     int N = 7;
-    SegmentTree<int> tree(N);
+    SegmentTree tree(N);
     int sum = 0;
     for (int i = 1; i <= N; i++) {
         tree.update(i, i);
