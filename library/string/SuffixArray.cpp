@@ -30,65 +30,63 @@ using namespace std;
 typedef long long LL;
 typedef pair<int, int> PII; typedef pair<PII, int> PII2;
 typedef vector<int> VI; typedef vector<VI> VVI;
-
 class SuffixArray {
 public:
-    int N;
-    VI SA, RA, LCP;
-    SuffixArray(const char* S) : N(strlen(S)) {
-        VI V; for (int i = 0; i < N; i++) V.push_back(S[i]); init(V);
+    int n;
+    vector<int> sa, ra, lcp;
+    SuffixArray(const string& S) : n(S.size()) {
+        vector<int> v; for (int i = 0; i < n; i++) v.push_back(S[i]); init(v);
     }
-    SuffixArray(const VI &VV) : N(VV.size()) { VI V(VV); init(V); }
+    SuffixArray(const vector<int> &VV) : n(VV.size()) { vector<int> v(VV); init(v); }
 private:
-    void init(VI& V) {
-        VI OV(V), C(N);
-        compress(V, C); compute_sa(V, C);
-        RA.resize(N + 1); for(int i = 0; i <= N; i++) RA[SA[i]] = i;
-        compute_lcp(OV);
+    void init(vector<int>& v) {
+        vector<int> ov(v), c(n);
+        compress(v, c); compute_sa(v, c);
+        ra.resize(n + 1); for(int i = 0; i <= n; i++) ra[sa[i]] = i;
+        compute_lcp(ov);
     }
-    void compress(VI& V, VI& C) {
-        copy(V.begin(), V.end(), C.begin());
-        sort(C.begin(), C.end());
-        VI::iterator cend = unique(C.begin(), C.end());
-        for (int i = 0; i < N; i++) V[i] = lower_bound(C.begin(), cend, V[i]) - C.begin() + 1;
-        V.push_back(0); C.push_back(0);
+    void compress(vector<int>& v, vector<int>& c) {
+        copy(v.begin(), v.end(), c.begin());
+        sort(c.begin(), c.end());
+        vector<int>::iterator cend = unique(c.begin(), c.end());
+        for (int i = 0; i < n; i++) v[i] = lower_bound(c.begin(), cend, v[i]) - c.begin() + 1;
+        v.push_back(0); c.push_back(0);
     }
-    void compute_sa(VI& V, VI& C) {
-        VI T(N + 1);
-        for (int i = 0; i <= N; i++) SA.push_back(i);
-        for (int ski = 0; V[SA[N]] < N; ski = ski ? ski << 1 : 1) {
-            fill(C.begin(), C.end(), 0);
-            for (int i = 0; i < ski; i++) T[i] = N - i;
-            for (int i = 0, p = ski; i <= N; i++) if(SA[i] >= ski) T[p++] = SA[i] - ski;
-            for (int i = 0; i <= N; i++) C[V[i]]++;
-            for (int i = 1; i <= N; i++) C[i] += C[i - 1];
-            for (int i = N; i >= 0; i--) SA[--C[V[T[i]]]] = T[i];
-            T[SA[0]] = 0;
-            for (int j = 1; j <= N; j++) {
-                int a = SA[j];
-                int b = SA[j - 1];
-                T[a] = T[b] + (a + ski >= N || b + ski >= N ||
-                               V[a] != V[b] || V[a + ski] != V[b + ski]);
+    void compute_sa(vector<int>& v, vector<int>& c) {
+        vector<int> t(n + 1);
+        for (int i = 0; i <= n; i++) sa.push_back(i);
+        for (int ski = 0; v[sa[n]] < n; ski = ski ? ski << 1 : 1) {
+            fill(c.begin(), c.end(), 0);
+            for (int i = 0; i < ski; i++) t[i] = n - i;
+            for (int i = 0, p = ski; i <= n; i++) if(sa[i] >= ski) t[p++] = sa[i] - ski;
+            for (int i = 0; i <= n; i++) c[v[i]]++;
+            for (int i = 1; i <= n; i++) c[i] += c[i - 1];
+            for (int i = n; i >= 0; i--) sa[--c[v[t[i]]]] = t[i];
+            t[sa[0]] = 0;
+            for (int j = 1; j <= n; j++) {
+                int a = sa[j];
+                int b = sa[j - 1];
+                t[a] = t[b] + (a + ski >= n || b + ski >= n ||
+                               v[a] != v[b] || v[a + ski] != v[b + ski]);
             }
-            V.swap(T);
+            v.swap(t);
         }
     }
-    void compute_lcp(const VI& OV) {
-        LCP = VI(N);
+    void compute_lcp(const vector<int>& ov) {
+        lcp = vector<int>(n);
         int len = 0;
-        for (int i = 0; i < N; i++, len = max(0, len - 1)) {
-            int si = RA[i], j = SA[si - 1];
-            for (; i + len < N && j + len < N && OV[i + len] == OV[j + len]; len++);
-            LCP[si - 1] = len;
+        for (int i = 0; i < n; i++, len = max(0, len - 1)) {
+            int si = ra[i], j = sa[si - 1];
+            for (; i + len < n && j + len < n && ov[i + len] == ov[j + len]; len++);
+            lcp[si - 1] = len;
         }
     }
 };
 
 int main() {
-    string s = "banana";
-    SuffixArray sa(s.c_str());
-    for (int i = 0; i <= sa.N; i++) {
-        printf("%d ", sa.SA[i]);
+    SuffixArray sa("banana");
+    for (int i = 0; i <= sa.n; i++) {
+        printf("%d ", sa.sa[i]);
     }
     printf("\n");
     return 0;
